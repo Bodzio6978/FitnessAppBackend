@@ -1,0 +1,15 @@
+package com.gmail.bogumilmecel2.plugins
+
+import io.ktor.server.plugins.defaultheaders.*
+import io.ktor.server.plugins.conditionalheaders.*
+import io.ktor.server.application.*
+import io.ktor.server.response.*
+import io.ktor.server.request.*
+
+fun Application.configureHTTP() {
+    install(DefaultHeaders) {
+        header("X-Engine", "Ktor") // will send this header with each response
+    }
+    install(ConditionalHeaders)
+
+}
