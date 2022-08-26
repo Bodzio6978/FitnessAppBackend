@@ -1,4 +1,4 @@
-package com.gmail.bogumilmecel2.plugins
+package com.gmail.bogumilmecel2.common.plugins
 
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.plugins.contentnegotiation.*

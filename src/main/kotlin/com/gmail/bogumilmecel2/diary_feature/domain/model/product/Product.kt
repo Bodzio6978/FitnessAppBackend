@@ -1,7 +1,7 @@
-package com.gmail.bogumilmecel2.diary_feature.domain.product
+package com.gmail.bogumilmecel2.diary_feature.domain.model.product
 
-import com.gmail.bogumilmecel2.diary_feature.domain.model.NutritionValues
-import com.gmail.bogumilmecel2.diary_feature.domain.model.Price
+import com.gmail.bogumilmecel2.diary_feature.domain.model.nutrition_values.NutritionValues
+import com.gmail.bogumilmecel2.diary_feature.domain.model.price.Price
 import kotlinx.serialization.Serializable
 
 @Serializable

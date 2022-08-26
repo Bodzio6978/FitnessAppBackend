@@ -1,5 +1,6 @@
 package com.gmail.bogumilmecel2
 
+import com.gmail.bogumilmecel2.common.plugins.configureRouting
 import io.ktor.server.plugins.callloging.*
 import org.slf4j.event.*
 import io.ktor.server.request.*

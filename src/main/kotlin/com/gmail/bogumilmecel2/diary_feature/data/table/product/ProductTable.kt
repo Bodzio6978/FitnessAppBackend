@@ -1,5 +1,6 @@
-package com.gmail.bogumilmecel2.diary_feature.domain.product
+package com.gmail.bogumilmecel2.diary_feature.data.table.product
 
+import com.gmail.bogumilmecel2.diary_feature.domain.model.product.ProductEntity
 import org.ktorm.schema.Table
 import org.ktorm.schema.int
 import org.ktorm.schema.varchar
@@ -12,5 +13,5 @@ object ProductTable: Table<ProductEntity>(tableName = "product"){
     val unit = varchar("unit").bindTo { it.unit }
     val nutritionValuesId = int("nutritionValuesId").bindTo { it.nutritionValuesId }
     val barcode = varchar("barcode").bindTo { it.barcode }
-    val priceId = int("price").bindTo { it.price.id }
+    val priceId = int("priceId").bindTo { it.priceId }
 }

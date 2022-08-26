@@ -1,6 +1,6 @@
-package com.gmail.bogumilmecel2.diary_feature.domain.product
+package com.gmail.bogumilmecel2.diary_feature.domain.model.product
 
-import com.gmail.bogumilmecel2.diary_feature.domain.model.Price
+import com.gmail.bogumilmecel2.diary_feature.domain.model.price.Price
 import org.ktorm.entity.Entity
 
 interface ProductEntity : Entity<ProductEntity> {
@@ -11,5 +11,5 @@ interface ProductEntity : Entity<ProductEntity> {
     val unit: String
     val nutritionValuesId: Int
     val barcode: String?
-    val price:Price
+    val priceId: Int
 }

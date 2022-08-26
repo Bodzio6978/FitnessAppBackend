@@ -1,4 +1,4 @@
-package com.gmail.bogumilmecel2.diary_feature.domain.model
+package com.gmail.bogumilmecel2.diary_feature.domain.model.nutrition_values
 
 import kotlinx.serialization.Serializable
 
