@@ -1,8 +1,13 @@
 package com.gmail.bogumilmecel2.diary_feature.routes
 
 import com.gmail.bogumilmecel2.common.data.database.DatabaseManager
+import com.gmail.bogumilmecel2.common.exception.NoDatabaseEntryException
+import com.gmail.bogumilmecel2.common.util.Resource
 import com.gmail.bogumilmecel2.diary_feature.data.repository.DiaryRepositoryImp
 import com.gmail.bogumilmecel2.diary_feature.domain.model.product.Product
+import com.gmail.bogumilmecel2.diary_feature.domain.use_case.GetProducts
+import com.gmail.bogumilmecel2.diary_feature.domain.use_case.InsertProduct
+import com.gmail.bogumilmecel2.diary_feature.domain.use_case.ProductUseCases
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -18,29 +23,40 @@ import kotlin.text.get
 fun Route.productRouting() {
 
     val databaseManager = DatabaseManager()
+
     val diaryRepository = DiaryRepositoryImp(
         database = databaseManager.ktormDatabase
     )
-    val scope = CoroutineScope(Job() + Dispatchers.IO)
 
+    val productUseCases = ProductUseCases(
+        insertProduct = InsertProduct(diaryRepository),
+        getProducts = GetProducts(diaryRepository)
+    )
 
+    route("products") {
+        get("/{searchText}") {
+            val searchText = call.parameters["searchText"]
 
-    route("products"){
-        get("") {
-            val text = "huj"
+            if (searchText==null){
+                call.respond(HttpStatusCode.BadRequest, message = "Incorrect search text")
+                return@get
+            }
 
-                val items = diaryRepository.getProducts(text)
-                call.respond(
-                    items
-                )
+            val resource = productUseCases.getProducts(searchText)
+
+            if (resource is Resource.Error){
+                if (resource.error is NoDatabaseEntryException){
+                    call.respond(HttpStatusCode.NotFound)
+                }else{
+                    call.respond(HttpStatusCode.BadRequest)
+                }
+                return@get
+            }else{
+                call.respond(resource.data!!)
+            }
+
 
         }
-//        post("") {
-//            val product = call.receive<Product>()
-//            scope.launch {
-//                diaryRepository.insertProduct(product)
-//            }
-//        }
     }
 }
 

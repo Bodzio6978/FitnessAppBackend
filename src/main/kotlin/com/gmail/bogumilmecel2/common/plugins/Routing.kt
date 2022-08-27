@@ -6,17 +6,5 @@ import io.ktor.server.application.*
 
 @OptIn(KtorExperimentalLocationsAPI::class)
 fun Application.configureRouting() {
-//    install(StatusPages) {
-//        exception<AuthenticationException> { call, cause ->
-//            call.respond(HttpStatusCode.Unauthorized)
-//        }
-//        exception<AuthorizationException> { call, cause ->
-//            call.respond(HttpStatusCode.Forbidden)
-//        }
-//
-//    }
-
     registerProductRoutes()
 }
-class AuthenticationException : RuntimeException()
-class AuthorizationException : RuntimeException()

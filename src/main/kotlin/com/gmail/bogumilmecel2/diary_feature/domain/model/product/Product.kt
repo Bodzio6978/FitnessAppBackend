@@ -15,3 +15,5 @@ data class Product(
     val barcode: String? = "",
     val price: Price
 )
+
+

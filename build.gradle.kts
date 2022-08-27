@@ -6,7 +6,7 @@ plugins {
     application
     kotlin("jvm") version "1.7.10"
     id("io.ktor.plugin") version "2.1.0"
-                id("org.jetbrains.kotlin.plugin.serialization") version "1.7.10"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.7.10"
 }
 
 group = "com.gmail.bogumilmecel2"
@@ -38,9 +38,9 @@ dependencies {
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
 
-    implementation ("mysql:mysql-connector-java:8.0.30")
-    implementation ("org.ktorm:ktorm-core:3.5.0")
-    implementation ("org.ktorm:ktorm-support-mysql:3.5.0")
+    implementation("mysql:mysql-connector-java:8.0.30")
+    implementation("org.ktorm:ktorm-core:3.5.0")
+    implementation("org.ktorm:ktorm-support-mysql:3.5.0")
 
 
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
