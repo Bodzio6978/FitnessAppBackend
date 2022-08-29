@@ -13,26 +13,11 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlin.text.get
 
 
-fun Route.productRouting() {
-
-    val databaseManager = DatabaseManager()
-
-    val diaryRepository = DiaryRepositoryImp(
-        database = databaseManager.ktormDatabase
-    )
-
-    val productUseCases = ProductUseCases(
-        insertProduct = InsertProduct(diaryRepository),
-        getProducts = GetProducts(diaryRepository)
-    )
-
+fun Route.registerProductRoutes(
+    productUseCases: ProductUseCases,
+) {
     route("products") {
         get("/{searchText}") {
             val searchText = call.parameters["searchText"]
@@ -54,14 +39,20 @@ fun Route.productRouting() {
             }else{
                 call.respond(resource.data!!)
             }
-
-
         }
-    }
-}
 
-fun Application.registerProductRoutes() {
-    routing {
-        productRouting()
+        post {
+            val product = call.receiveOrNull<Product>()
+            product?.let {
+                val newProduct = productUseCases.insertProduct(product)
+
+                println(newProduct)
+                call.respond(newProduct.data!!)
+
+            }?: kotlin.run {
+                call.respond(HttpStatusCode.BadRequest)
+                return@post
+            }
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.gmail.bogumilmecel2.common.util.extensions
+package main.kotlin.com.gmail.bogumilmecel2.common.util.extensions
 
 import com.gmail.bogumilmecel2.diary_feature.data.table.nutrition_values.NutritionValuesTable
 import com.gmail.bogumilmecel2.diary_feature.data.table.price.PriceTable

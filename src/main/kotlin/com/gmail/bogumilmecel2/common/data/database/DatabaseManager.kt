@@ -1,12 +1,6 @@
 package com.gmail.bogumilmecel2.common.data.database
 
-import com.gmail.bogumilmecel2.diary_feature.domain.model.price.Price
-import com.gmail.bogumilmecel2.diary_feature.domain.model.product.Product
-import com.gmail.bogumilmecel2.diary_feature.data.table.product.ProductTable
 import org.ktorm.database.Database
-import org.ktorm.dsl.from
-import org.ktorm.dsl.map
-import org.ktorm.dsl.select
 
 class DatabaseManager {
 

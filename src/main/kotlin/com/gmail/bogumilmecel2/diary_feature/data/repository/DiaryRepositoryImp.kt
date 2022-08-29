@@ -2,7 +2,7 @@ package com.gmail.bogumilmecel2.diary_feature.data.repository
 
 import com.gmail.bogumilmecel2.common.exception.NoDatabaseEntryException
 import com.gmail.bogumilmecel2.common.util.Resource
-import com.gmail.bogumilmecel2.common.util.extensions.mapProduct
+import main.kotlin.com.gmail.bogumilmecel2.common.util.extensions.mapProduct
 import com.gmail.bogumilmecel2.diary_feature.data.table.nutrition_values.NutritionValuesTable
 import com.gmail.bogumilmecel2.diary_feature.data.table.price.PriceTable
 import com.gmail.bogumilmecel2.diary_feature.data.table.product.ProductTable
@@ -101,6 +101,7 @@ class DiaryRepositoryImp(
                 )
             )
         } catch (e: Exception) {
+            e.printStackTrace()
             Resource.Error(e)
         }
     }

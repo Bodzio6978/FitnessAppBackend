@@ -1,6 +1,5 @@
 package com.gmail.bogumilmecel2.diary_feature.domain.model.product
 
-import com.gmail.bogumilmecel2.diary_feature.domain.model.price.Price
 import org.ktorm.entity.Entity
 
 interface ProductEntity : Entity<ProductEntity> {
