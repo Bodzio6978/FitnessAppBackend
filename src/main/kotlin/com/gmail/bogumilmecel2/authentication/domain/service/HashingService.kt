@@ -1,6 +1,6 @@
-package com.gmail.bogumilmecel2.security.domain.service
+package com.gmail.bogumilmecel2.authentication.domain.service
 
-import com.gmail.bogumilmecel2.security.domain.model.hash.SaltedHash
+import com.gmail.bogumilmecel2.authentication.domain.model.hash.SaltedHash
 
 interface HashingService {
     fun generateSaltedHash(value:String, saltLength:Int = 32): SaltedHash

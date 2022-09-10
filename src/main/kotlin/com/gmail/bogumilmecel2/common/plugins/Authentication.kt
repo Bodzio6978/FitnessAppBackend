@@ -7,24 +7,16 @@ import com.gmail.bogumilmecel2.authentication.routes.authenticationRoute
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
-import com.gmail.bogumilmecel2.security.data.service.JwtTokenService
-import com.gmail.bogumilmecel2.security.data.service.SHA256HashingService
-import com.gmail.bogumilmecel2.security.domain.model.token.TokenConfig
+import com.gmail.bogumilmecel2.authentication.data.service.JwtTokenService
+import com.gmail.bogumilmecel2.authentication.data.service.SHA256HashingService
+import com.gmail.bogumilmecel2.authentication.domain.model.token.TokenConfig
 import io.ktor.server.routing.*
 
 fun Application.configureAuthentication(
-    authenticationRepository: AuthenticationRepository
+    authenticationRepository: AuthenticationRepository,
+    tokenConfig: TokenConfig
 ){
 
-    val tokenService = JwtTokenService()
-    val tokenConfig = TokenConfig(
-        issuer = environment.config.property("ktor.jwt.issuer").getString(),
-        audience = environment.config.property("ktor.jwt.audience").getString(),
-        expiresIn = 365L * 1000L * 60L * 60L * 24L,
-        secret = System.getenv("JWT_SECRET")
-    )
-
-    val hashingService = SHA256HashingService()
 
     install(Authentication){
         jwt {
@@ -46,14 +38,5 @@ fun Application.configureAuthentication(
             }
 
         }
-    }
-
-    routing {
-        authenticationRoute(
-            tokenConfig = tokenConfig,
-            tokenService = tokenService,
-            hashingService = hashingService,
-            authenticationRepository = authenticationRepository
-        )
     }
 }

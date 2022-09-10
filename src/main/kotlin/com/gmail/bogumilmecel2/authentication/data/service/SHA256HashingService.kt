@@ -1,7 +1,7 @@
-package com.gmail.bogumilmecel2.security.data.service
+package com.gmail.bogumilmecel2.authentication.data.service
 
-import com.gmail.bogumilmecel2.security.domain.model.hash.SaltedHash
-import com.gmail.bogumilmecel2.security.domain.service.HashingService
+import com.gmail.bogumilmecel2.authentication.domain.model.hash.SaltedHash
+import com.gmail.bogumilmecel2.authentication.domain.service.HashingService
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.codec.digest.DigestUtils
 import java.security.SecureRandom

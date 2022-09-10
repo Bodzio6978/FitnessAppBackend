@@ -1,4 +1,4 @@
-package com.gmail.bogumilmecel2.security.domain.model.hash
+package com.gmail.bogumilmecel2.authentication.domain.model.hash
 
 data class SaltedHash(
     val hash:String,

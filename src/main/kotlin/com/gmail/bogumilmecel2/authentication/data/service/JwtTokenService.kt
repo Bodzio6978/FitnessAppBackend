@@ -1,10 +1,10 @@
-package com.gmail.bogumilmecel2.security.data.service
+package com.gmail.bogumilmecel2.authentication.data.service
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.gmail.bogumilmecel2.security.domain.model.token.TokenClaim
-import com.gmail.bogumilmecel2.security.domain.model.token.TokenConfig
-import com.gmail.bogumilmecel2.security.domain.service.TokenService
+import com.gmail.bogumilmecel2.authentication.domain.model.token.TokenClaim
+import com.gmail.bogumilmecel2.authentication.domain.model.token.TokenConfig
+import com.gmail.bogumilmecel2.authentication.domain.service.TokenService
 import java.util.*
 
 class JwtTokenService: TokenService {

@@ -1,8 +1,9 @@
 package com.gmail.bogumilmecel2.authentication.data.repository
 
 import com.gmail.bogumilmecel2.authentication.data.table.UserTable
-import com.gmail.bogumilmecel2.authentication.domain.repository.AuthenticationRepository
 import com.gmail.bogumilmecel2.authentication.domain.model.user.User
+import com.gmail.bogumilmecel2.authentication.domain.repository.AuthenticationRepository
+import com.gmail.bogumilmecel2.common.util.Resource
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
 
@@ -11,7 +12,7 @@ class AuthenticationRepositoryImp(
 ) : AuthenticationRepository {
 
 
-    override suspend fun getUserByUsername(username: String): User? {
+    override suspend fun getUserByUsername(username: String): Resource<User?> {
         return try {
             val userList = database.from(UserTable).select().where {
                 UserTable.username eq username
@@ -23,23 +24,23 @@ class AuthenticationRepositoryImp(
                     salt = it[UserTable.salt] ?: "",
                 )
             }
-            userList[0]
-        }catch (e:Exception){
-            null
+            Resource.Success(userList[0])
+        } catch (e: Exception) {
+            Resource.Error(e)
         }
     }
 
-    override suspend fun registerNewUser(user: User): Boolean {
+    override suspend fun registerNewUser(user: User): Resource<Int> {
         return try {
-            val generatedKey = database.insertAndGenerateKey(UserTable){
+            val generatedKey = database.insertAndGenerateKey(UserTable) {
                 set(it.username, user.username)
                 set(it.password, user.password)
                 set(it.salt, user.salt)
-            }
-            true
-        }catch (e:Exception){
+            } as Int
+            Resource.Success(generatedKey)
+        } catch (e: Exception) {
             e.printStackTrace()
-            false
+            Resource.Error(e)
         }
     }
 }
