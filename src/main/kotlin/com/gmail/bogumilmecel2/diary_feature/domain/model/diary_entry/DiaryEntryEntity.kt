@@ -6,5 +6,7 @@ interface DiaryEntryEntity: Entity<DiaryEntryEntity> {
     val id:Int
     val mealName: String
     val timestamp: Long
+    val date:String
     val weight: Int
+    val productId:Int
 }

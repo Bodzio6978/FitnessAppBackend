@@ -6,7 +6,7 @@ import com.gmail.bogumilmecel2.diary_feature.domain.model.product.Product
 
 interface DiaryRepository {
 
-    suspend fun getDiaryEntries(date:Long):List<DiaryEntry>
+    suspend fun getDiaryEntries(date:String, userId:Int):Resource<List<DiaryEntry>>
 
     suspend fun getDiaryEntry(id:String): DiaryEntry
 

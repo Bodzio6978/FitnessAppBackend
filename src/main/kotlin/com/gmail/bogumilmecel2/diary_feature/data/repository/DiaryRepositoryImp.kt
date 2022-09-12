@@ -2,7 +2,9 @@ package com.gmail.bogumilmecel2.diary_feature.data.repository
 
 import com.gmail.bogumilmecel2.common.exception.NoDatabaseEntryException
 import com.gmail.bogumilmecel2.common.util.Resource
-import main.kotlin.com.gmail.bogumilmecel2.common.util.extensions.mapProduct
+import com.gmail.bogumilmecel2.common.util.extensions.formatToString
+import com.gmail.bogumilmecel2.common.util.extensions.mapProduct
+import com.gmail.bogumilmecel2.diary_feature.data.table.diary_entry.DiaryEntriesTable
 import com.gmail.bogumilmecel2.diary_feature.data.table.nutrition_values.NutritionValuesTable
 import com.gmail.bogumilmecel2.diary_feature.data.table.price.PriceTable
 import com.gmail.bogumilmecel2.diary_feature.data.table.product.ProductTable
@@ -11,13 +13,36 @@ import com.gmail.bogumilmecel2.diary_feature.domain.model.product.Product
 import com.gmail.bogumilmecel2.diary_feature.domain.repository.DiaryRepository
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
+import java.util.*
 
 class DiaryRepositoryImp(
     private val database: Database
 ) : DiaryRepository {
 
-    override suspend fun getDiaryEntries(date: Long): List<DiaryEntry> {
-        TODO("Not yet implemented")
+    override suspend fun getDiaryEntries(date: String, userId: Int): Resource<List<DiaryEntry>> {
+        return try {
+            val query = database.from(DiaryEntriesTable)
+                .innerJoin(ProductTable, on = ProductTable.id eq DiaryEntriesTable.productId)
+                .innerJoin(NutritionValuesTable, on = NutritionValuesTable.id eq ProductTable.nutritionValuesId)
+                .innerJoin(PriceTable, on = PriceTable.id eq ProductTable.priceId)
+                .select()
+                .where {
+                    DiaryEntriesTable.date eq date
+                }.map {
+                    DiaryEntry(
+                        id = it[DiaryEntriesTable.id] ?: -1,
+                        timeStamp = it[DiaryEntriesTable.timestamp] ?: System.currentTimeMillis(),
+                        date = it[DiaryEntriesTable.date] ?: Date(System.currentTimeMillis()).formatToString(),
+                        weight = it[DiaryEntriesTable.weight] ?: 0,
+                        product = it.mapProduct(),
+                        mealName = it[DiaryEntriesTable.mealName] ?: "Breakfast"
+                    )
+                }
+            Resource.Success(data = query)
+        }catch (e:Exception){
+            e.printStackTrace()
+            Resource.Error(e)
+        }
     }
 
     override suspend fun getDiaryEntry(id: String): DiaryEntry {

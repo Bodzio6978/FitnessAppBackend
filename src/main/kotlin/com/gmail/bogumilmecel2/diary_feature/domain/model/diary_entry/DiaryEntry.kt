@@ -8,6 +8,7 @@ data class DiaryEntry(
     val id:Int,
     val product: Product,
     val timeStamp:Long,
-    var weight:Double,
+    val date:String,
+    var weight:Int,
     val mealName:String
 )

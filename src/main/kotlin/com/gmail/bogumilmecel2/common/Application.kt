@@ -4,16 +4,20 @@ import com.gmail.bogumilmecel2.authentication.data.repository.AuthenticationRepo
 import com.gmail.bogumilmecel2.authentication.data.service.JwtTokenService
 import com.gmail.bogumilmecel2.authentication.data.service.SHA256HashingService
 import com.gmail.bogumilmecel2.authentication.domain.model.token.TokenConfig
-import com.gmail.bogumilmecel2.authentication.routes.authenticationRoute
+import com.gmail.bogumilmecel2.authentication.domain.use_case.AuthRoutes
+import com.gmail.bogumilmecel2.authentication.domain.use_case.GetUserByUsername
+import com.gmail.bogumilmecel2.authentication.domain.use_case.RegisterNewUser
+import com.gmail.bogumilmecel2.authentication.routes.configureAuthRoutes
 import com.gmail.bogumilmecel2.common.data.database.DatabaseManager
-import com.gmail.bogumilmecel2.common.plugins.*
-import io.ktor.server.application.*
 import com.gmail.bogumilmecel2.common.plugins.configureAuthentication
+import com.gmail.bogumilmecel2.common.plugins.configureMonitoring
+import com.gmail.bogumilmecel2.common.plugins.configureSerialization
 import com.gmail.bogumilmecel2.diary_feature.data.repository.DiaryRepositoryImp
 import com.gmail.bogumilmecel2.diary_feature.domain.use_case.GetProducts
 import com.gmail.bogumilmecel2.diary_feature.domain.use_case.InsertProduct
 import com.gmail.bogumilmecel2.diary_feature.domain.use_case.ProductUseCases
-import com.gmail.bogumilmecel2.diary_feature.routes.configureFeatureDiaryRoutes
+import com.gmail.bogumilmecel2.diary_feature.routes.configureDiaryRoutes
+import io.ktor.server.application.*
 import io.ktor.server.routing.*
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -45,22 +49,29 @@ fun Application.module() {
     val hashingService = SHA256HashingService()
 
     configureAuthentication(
-        authenticationRepository = authenticationRepository,
         tokenConfig = tokenConfig
     )
     configureMonitoring()
     configureSerialization()
 
     routing {
-        configureFeatureDiaryRoutes(
+        configureDiaryRoutes(
             productUseCases = productUseCases
         )
 
-        authenticationRoute(
+        configureAuthRoutes(
             tokenConfig = tokenConfig,
-            tokenService = tokenService,
-            hashingService = hashingService,
-            authenticationRepository = authenticationRepository
+            authRoutes = AuthRoutes(
+                registerNewUser = RegisterNewUser(
+                    authenticationRepository = authenticationRepository,
+                    hashingService = hashingService
+                ),
+                getUserByUsername = GetUserByUsername(
+                    authenticationRepository = authenticationRepository,
+                    hashingService = hashingService,
+                    tokenService = tokenService
+                )
+            )
         )
 
     }

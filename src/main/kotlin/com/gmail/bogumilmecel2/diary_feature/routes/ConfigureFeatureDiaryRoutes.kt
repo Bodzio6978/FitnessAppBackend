@@ -6,7 +6,7 @@ import com.gmail.bogumilmecel2.diary_feature.routes.product.configureSearchForPr
 import io.ktor.server.routing.*
 
 
-fun Route.configureFeatureDiaryRoutes(
+fun Route.configureDiaryRoutes(
     productUseCases: ProductUseCases,
 ) {
     route("products") {
