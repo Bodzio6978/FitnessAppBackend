@@ -15,7 +15,7 @@ fun Route.configurePostDiaryEntryRoute(
     insertDiaryEntry: InsertDiaryEntry
 ) {
     authenticate {
-        post("/diaryEntries") {
+        post{
             val callDiaryEntry = call.receiveOrNull<DiaryEntry>()
             callDiaryEntry?.let { diaryEntry ->
                 val principal = call.principal<JWTPrincipal>()
@@ -48,6 +48,7 @@ fun Route.configurePostDiaryEntryRoute(
                         }
                     }
                 } ?: kotlin.run {
+                    println("huj")
                     call.respond(
                         HttpStatusCode.Unauthorized
                     )

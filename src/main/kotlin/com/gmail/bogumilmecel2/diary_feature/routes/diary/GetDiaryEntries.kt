@@ -9,7 +9,7 @@ import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Route.getDiaryEntries(
+fun Route.configureGetDiaryEntriesRoute(
     getDiaryEntries: GetDiaryEntries
 ){
     authenticate {
@@ -21,7 +21,7 @@ fun Route.getDiaryEntries(
             )
             call.respond(
                 HttpStatusCode.OK,
-                message = diaryEntries
+                message = diaryEntries.data!!
             )
         }
     }

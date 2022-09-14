@@ -35,6 +35,7 @@ class DiaryRepositoryImp(
                 )
             )
         }catch (e:Exception){
+            e.printStackTrace()
             Resource.Error(e)
         }
 
@@ -49,6 +50,9 @@ class DiaryRepositoryImp(
                 .select()
                 .where {
                     DiaryEntriesTable.date eq date
+                }
+                .where {
+                    DiaryEntriesTable.userId eq userId
                 }.map {
                     DiaryEntry(
                         id = it[DiaryEntriesTable.id] ?: -1,

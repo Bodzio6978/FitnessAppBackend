@@ -7,7 +7,7 @@ import java.util.*
 
 
 @Serializable
-@Resource("/diaryEntries")
+@Resource("")
 class DiaryEntries(
     val date:String = Date(System.currentTimeMillis()).formatToString()
 )

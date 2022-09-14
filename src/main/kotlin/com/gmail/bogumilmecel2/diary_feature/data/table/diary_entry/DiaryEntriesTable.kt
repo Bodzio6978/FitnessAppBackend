@@ -6,7 +6,7 @@ import org.ktorm.schema.int
 import org.ktorm.schema.long
 import org.ktorm.schema.varchar
 
-object DiaryEntriesTable:Table<DiaryEntryEntity>(tableName = "diaryEntries") {
+object DiaryEntriesTable:Table<DiaryEntryEntity>(tableName = "diaryEntry") {
     val id = int("id").primaryKey().bindTo { it.id }
     val mealName = varchar("mealName").bindTo { it.mealName }
     val timestamp = long("timestamp").bindTo { it.timestamp }

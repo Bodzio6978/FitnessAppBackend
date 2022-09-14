@@ -17,6 +17,9 @@ import com.gmail.bogumilmecel2.diary_feature.data.repository.DiaryRepositoryImp
 import com.gmail.bogumilmecel2.diary_feature.domain.use_case.GetProducts
 import com.gmail.bogumilmecel2.diary_feature.domain.use_case.InsertProduct
 import com.gmail.bogumilmecel2.diary_feature.domain.use_case.ProductUseCases
+import com.gmail.bogumilmecel2.diary_feature.domain.use_case.diary.DiaryUseCases
+import com.gmail.bogumilmecel2.diary_feature.domain.use_case.diary.GetDiaryEntries
+import com.gmail.bogumilmecel2.diary_feature.domain.use_case.diary.InsertDiaryEntry
 import com.gmail.bogumilmecel2.diary_feature.routes.configureDiaryRoutes
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
@@ -33,6 +36,11 @@ fun Application.module() {
     val productUseCases = ProductUseCases(
         insertProduct = InsertProduct(diaryRepository),
         getProducts = GetProducts(diaryRepository)
+    )
+
+    val diaryUseCases = DiaryUseCases(
+        getDiaryEntries = GetDiaryEntries(diaryRepository),
+        insertDiaryEntry = InsertDiaryEntry(diaryRepository)
     )
 
     val authenticationRepository = AuthenticationRepositoryImp(
@@ -60,7 +68,8 @@ fun Application.module() {
 
     routing {
         configureDiaryRoutes(
-            productUseCases = productUseCases
+            productUseCases = productUseCases,
+            diaryUseCases = diaryUseCases
         )
 
         configureAuthRoutes(
