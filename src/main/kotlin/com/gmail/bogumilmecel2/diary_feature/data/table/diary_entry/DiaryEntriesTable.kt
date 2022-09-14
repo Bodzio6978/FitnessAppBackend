@@ -10,6 +10,7 @@ object DiaryEntriesTable:Table<DiaryEntryEntity>(tableName = "diaryEntries") {
     val id = int("id").primaryKey().bindTo { it.id }
     val mealName = varchar("mealName").bindTo { it.mealName }
     val timestamp = long("timestamp").bindTo { it.timestamp }
+    val userId = int("userId").bindTo { it.userId }
     val date = varchar("date").bindTo { it.date }
     val weight = int("weight").bindTo { it.weight }
     val productId = int("productId").bindTo { it.productId }

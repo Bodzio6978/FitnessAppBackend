@@ -19,6 +19,27 @@ class DiaryRepositoryImp(
     private val database: Database
 ) : DiaryRepository {
 
+    override suspend fun insertDiaryEntry(diaryEntry: DiaryEntry, userId: Int):Resource<DiaryEntry> {
+        return try {
+            val diaryEntryId = database.insertAndGenerateKey(DiaryEntriesTable){
+                set(it.date, diaryEntry.date)
+                set(it.mealName, diaryEntry.mealName)
+                set(it.weight, diaryEntry.weight)
+                set(it.productId, diaryEntry.product.id)
+                set(it.timestamp, diaryEntry.timeStamp)
+                set(it.userId, userId)
+            } as Int
+            Resource.Success(
+                data = diaryEntry.copy(
+                    id = diaryEntryId
+                )
+            )
+        }catch (e:Exception){
+            Resource.Error(e)
+        }
+
+    }
+
     override suspend fun getDiaryEntries(date: String, userId: Int): Resource<List<DiaryEntry>> {
         return try {
             val query = database.from(DiaryEntriesTable)

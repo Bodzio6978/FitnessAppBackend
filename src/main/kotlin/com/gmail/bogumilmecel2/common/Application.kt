@@ -10,6 +10,7 @@ import com.gmail.bogumilmecel2.authentication.domain.use_case.RegisterNewUser
 import com.gmail.bogumilmecel2.authentication.routes.configureAuthRoutes
 import com.gmail.bogumilmecel2.common.data.database.DatabaseManager
 import com.gmail.bogumilmecel2.common.plugins.configureAuthentication
+import com.gmail.bogumilmecel2.common.plugins.configureLocations
 import com.gmail.bogumilmecel2.common.plugins.configureMonitoring
 import com.gmail.bogumilmecel2.common.plugins.configureSerialization
 import com.gmail.bogumilmecel2.diary_feature.data.repository.DiaryRepositoryImp
@@ -53,6 +54,9 @@ fun Application.module() {
     )
     configureMonitoring()
     configureSerialization()
+    configureLocations()
+
+
 
     routing {
         configureDiaryRoutes(

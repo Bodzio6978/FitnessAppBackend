@@ -9,6 +9,7 @@ interface DiaryRepository {
     suspend fun getDiaryEntries(date:String, userId:Int):Resource<List<DiaryEntry>>
 
     suspend fun getDiaryEntry(id:String): DiaryEntry
+    suspend fun insertDiaryEntry(diaryEntry: DiaryEntry, userId: Int):Resource<DiaryEntry>
 
     suspend fun getProducts(text:String): Resource<List<Product>>
 

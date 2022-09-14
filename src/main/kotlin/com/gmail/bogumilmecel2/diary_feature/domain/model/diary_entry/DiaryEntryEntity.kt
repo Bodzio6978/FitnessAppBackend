@@ -5,6 +5,7 @@ import org.ktorm.entity.Entity
 interface DiaryEntryEntity: Entity<DiaryEntryEntity> {
     val id:Int
     val mealName: String
+    val userId:Int
     val timestamp: Long
     val date:String
     val weight: Int
