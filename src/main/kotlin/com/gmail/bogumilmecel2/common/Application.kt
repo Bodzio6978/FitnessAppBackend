@@ -14,12 +14,13 @@ import com.gmail.bogumilmecel2.common.plugins.configureLocations
 import com.gmail.bogumilmecel2.common.plugins.configureMonitoring
 import com.gmail.bogumilmecel2.common.plugins.configureSerialization
 import com.gmail.bogumilmecel2.diary_feature.data.repository.DiaryRepositoryImp
-import com.gmail.bogumilmecel2.diary_feature.domain.use_case.GetProducts
-import com.gmail.bogumilmecel2.diary_feature.domain.use_case.InsertProduct
-import com.gmail.bogumilmecel2.diary_feature.domain.use_case.ProductUseCases
 import com.gmail.bogumilmecel2.diary_feature.domain.use_case.diary.DiaryUseCases
 import com.gmail.bogumilmecel2.diary_feature.domain.use_case.diary.GetDiaryEntries
 import com.gmail.bogumilmecel2.diary_feature.domain.use_case.diary.InsertDiaryEntry
+import com.gmail.bogumilmecel2.diary_feature.domain.use_case.product.GetProductHistory
+import com.gmail.bogumilmecel2.diary_feature.domain.use_case.product.GetProducts
+import com.gmail.bogumilmecel2.diary_feature.domain.use_case.product.InsertProduct
+import com.gmail.bogumilmecel2.diary_feature.domain.use_case.product.ProductUseCases
 import com.gmail.bogumilmecel2.diary_feature.routes.configureDiaryRoutes
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
@@ -35,7 +36,8 @@ fun Application.module() {
 
     val productUseCases = ProductUseCases(
         insertProduct = InsertProduct(diaryRepository),
-        getProducts = GetProducts(diaryRepository)
+        getProducts = GetProducts(diaryRepository),
+        getProductHistory = GetProductHistory(diaryRepository)
     )
 
     val diaryUseCases = DiaryUseCases(

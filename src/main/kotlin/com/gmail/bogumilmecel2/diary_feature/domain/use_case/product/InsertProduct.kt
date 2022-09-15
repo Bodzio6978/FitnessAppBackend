@@ -1,4 +1,4 @@
-package com.gmail.bogumilmecel2.diary_feature.domain.use_case
+package com.gmail.bogumilmecel2.diary_feature.domain.use_case.product
 
 import com.gmail.bogumilmecel2.common.util.Resource
 import com.gmail.bogumilmecel2.diary_feature.domain.model.product.Product

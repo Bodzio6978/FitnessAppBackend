@@ -1,7 +1,7 @@
 package com.gmail.bogumilmecel2.diary_feature.routes.product
 
 import com.gmail.bogumilmecel2.diary_feature.domain.model.product.Product
-import com.gmail.bogumilmecel2.diary_feature.domain.use_case.InsertProduct
+import com.gmail.bogumilmecel2.diary_feature.domain.use_case.product.InsertProduct
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*

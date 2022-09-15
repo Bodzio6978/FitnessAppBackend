@@ -155,4 +155,26 @@ class DiaryRepositoryImp(
             Resource.Error(e)
         }
     }
+
+    override suspend fun getProductHistory(userId: Int): Resource<List<Product>> {
+        return try {
+            val query = database.from(DiaryEntriesTable)
+                .innerJoin(ProductTable, on = ProductTable.id eq DiaryEntriesTable.productId)
+                .innerJoin(NutritionValuesTable, on = NutritionValuesTable.id eq ProductTable.nutritionValuesId)
+                .innerJoin(PriceTable, on = PriceTable.id eq ProductTable.priceId)
+                .select()
+                .limit(20)
+                .orderBy(DiaryEntriesTable.timestamp.desc())
+                .groupBy(ProductTable.name)
+                .where {
+                    DiaryEntriesTable.userId eq userId
+                }.map {
+                    it.mapProduct()
+                }
+            Resource.Success(query)
+        }catch (e:Exception){
+            e.printStackTrace()
+            Resource.Error(e)
+        }
+    }
 }

@@ -10,14 +10,10 @@ interface DiaryRepository {
 
     suspend fun getDiaryEntry(id:String): DiaryEntry
     suspend fun insertDiaryEntry(diaryEntry: DiaryEntry, userId: Int):Resource<DiaryEntry>
-
     suspend fun getProducts(text:String): Resource<List<Product>>
-
+    suspend fun getProductHistory(userId: Int):Resource<List<Product>>
     suspend fun getProduct(productId:Int): Resource<Product>
-
     suspend fun removeDiaryEntry(diaryEntry: DiaryEntry):Boolean
-
     suspend fun editDiaryEntry(diaryEntry: DiaryEntry):Boolean
-
     suspend fun insertProduct(product: Product):Resource<Product>
 }

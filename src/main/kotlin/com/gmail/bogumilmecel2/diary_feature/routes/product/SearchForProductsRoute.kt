@@ -2,7 +2,7 @@ package com.gmail.bogumilmecel2.diary_feature.routes.product
 
 import com.gmail.bogumilmecel2.common.exception.NoDatabaseEntryException
 import com.gmail.bogumilmecel2.common.util.Resource
-import com.gmail.bogumilmecel2.diary_feature.domain.use_case.GetProducts
+import com.gmail.bogumilmecel2.diary_feature.domain.use_case.product.GetProducts
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
