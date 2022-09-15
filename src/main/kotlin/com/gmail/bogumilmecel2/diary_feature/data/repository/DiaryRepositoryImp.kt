@@ -49,10 +49,7 @@ class DiaryRepositoryImp(
                 .innerJoin(PriceTable, on = PriceTable.id eq ProductTable.priceId)
                 .select()
                 .where {
-                    DiaryEntriesTable.date eq date
-                }
-                .where {
-                    DiaryEntriesTable.userId eq userId
+                    (DiaryEntriesTable.date eq date) and (DiaryEntriesTable.userId eq userId)
                 }.map {
                     DiaryEntry(
                         id = it[DiaryEntriesTable.id] ?: -1,
@@ -172,6 +169,18 @@ class DiaryRepositoryImp(
                     it.mapProduct()
                 }
             Resource.Success(query)
+        }catch (e:Exception){
+            e.printStackTrace()
+            Resource.Error(e)
+        }
+    }
+
+    override suspend fun deleteDiaryEntry(diaryEntryId: Int, userId: Int): Resource<Boolean> {
+        return try {
+            database.delete(DiaryEntriesTable){
+                (it.id eq diaryEntryId) and (it.userId eq userId)
+            }
+            Resource.Success(true)
         }catch (e:Exception){
             e.printStackTrace()
             Resource.Error(e)

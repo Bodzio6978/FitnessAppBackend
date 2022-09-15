@@ -14,6 +14,7 @@ import com.gmail.bogumilmecel2.common.plugins.configureLocations
 import com.gmail.bogumilmecel2.common.plugins.configureMonitoring
 import com.gmail.bogumilmecel2.common.plugins.configureSerialization
 import com.gmail.bogumilmecel2.diary_feature.data.repository.DiaryRepositoryImp
+import com.gmail.bogumilmecel2.diary_feature.domain.use_case.diary.DeleteDiaryEntry
 import com.gmail.bogumilmecel2.diary_feature.domain.use_case.diary.DiaryUseCases
 import com.gmail.bogumilmecel2.diary_feature.domain.use_case.diary.GetDiaryEntries
 import com.gmail.bogumilmecel2.diary_feature.domain.use_case.diary.InsertDiaryEntry
@@ -42,7 +43,8 @@ fun Application.module() {
 
     val diaryUseCases = DiaryUseCases(
         getDiaryEntries = GetDiaryEntries(diaryRepository),
-        insertDiaryEntry = InsertDiaryEntry(diaryRepository)
+        insertDiaryEntry = InsertDiaryEntry(diaryRepository),
+        deleteDiaryEntry = DeleteDiaryEntry(diaryRepository)
     )
 
     val authenticationRepository = AuthenticationRepositoryImp(
