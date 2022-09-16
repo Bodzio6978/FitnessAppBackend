@@ -17,4 +17,5 @@ interface DiaryRepository {
     suspend fun editDiaryEntry(diaryEntry: DiaryEntry):Boolean
     suspend fun insertProduct(product: Product):Resource<Product>
     suspend fun deleteDiaryEntry(diaryEntryId:Int, userId: Int):Resource<Boolean>
+    suspend fun searchForProductWithBarcode(barcode:String):Resource<Product?>
 }

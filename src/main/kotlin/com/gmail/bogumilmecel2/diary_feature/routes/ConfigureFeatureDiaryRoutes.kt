@@ -7,6 +7,7 @@ import com.gmail.bogumilmecel2.diary_feature.routes.diary.configureGetDiaryEntri
 import com.gmail.bogumilmecel2.diary_feature.routes.diary.configurePostDiaryEntryRoute
 import com.gmail.bogumilmecel2.diary_feature.routes.product.configureGetProductHistoryRoute
 import com.gmail.bogumilmecel2.diary_feature.routes.product.configurePostNewProductRoute
+import com.gmail.bogumilmecel2.diary_feature.routes.product.configureSearchForProductWithBarcodeRoute
 import com.gmail.bogumilmecel2.diary_feature.routes.product.configureSearchForProductWithTextRoute
 import io.ktor.server.routing.*
 
@@ -19,6 +20,7 @@ fun Route.configureDiaryRoutes(
         configurePostNewProductRoute(productUseCases.insertProduct)
         configureSearchForProductWithTextRoute(productUseCases.getProducts)
         configureGetProductHistoryRoute(productUseCases.getProductHistory)
+        configureSearchForProductWithBarcodeRoute(productUseCases.searchForProductWithBarcode)
     }
 
     route("/diaryEntries"){

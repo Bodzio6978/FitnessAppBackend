@@ -18,10 +18,7 @@ import com.gmail.bogumilmecel2.diary_feature.domain.use_case.diary.DeleteDiaryEn
 import com.gmail.bogumilmecel2.diary_feature.domain.use_case.diary.DiaryUseCases
 import com.gmail.bogumilmecel2.diary_feature.domain.use_case.diary.GetDiaryEntries
 import com.gmail.bogumilmecel2.diary_feature.domain.use_case.diary.InsertDiaryEntry
-import com.gmail.bogumilmecel2.diary_feature.domain.use_case.product.GetProductHistory
-import com.gmail.bogumilmecel2.diary_feature.domain.use_case.product.GetProducts
-import com.gmail.bogumilmecel2.diary_feature.domain.use_case.product.InsertProduct
-import com.gmail.bogumilmecel2.diary_feature.domain.use_case.product.ProductUseCases
+import com.gmail.bogumilmecel2.diary_feature.domain.use_case.product.*
 import com.gmail.bogumilmecel2.diary_feature.routes.configureDiaryRoutes
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
@@ -38,7 +35,8 @@ fun Application.module() {
     val productUseCases = ProductUseCases(
         insertProduct = InsertProduct(diaryRepository),
         getProducts = GetProducts(diaryRepository),
-        getProductHistory = GetProductHistory(diaryRepository)
+        getProductHistory = GetProductHistory(diaryRepository),
+        searchForProductWithBarcode = SearchForProductWithBarcode(diaryRepository)
     )
 
     val diaryUseCases = DiaryUseCases(

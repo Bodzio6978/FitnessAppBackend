@@ -130,10 +130,10 @@ class DiaryRepositoryImp(
                 set(it.name, product.name)
                 set(it.containerWeight, product.containerWeight)
                 set(it.position, product.position)
-                set(it.unit, product.name)
-                set(it.nutritionValuesId, 1)
+                set(it.unit, product.unit)
+                set(it.nutritionValuesId, insertedNutritionValuesId)
                 set(it.barcode, product.barcode)
-                set(it.priceId, 1)
+                set(it.priceId, insertedPriceId)
             } as Int
 
             Resource.Success(
@@ -183,6 +183,29 @@ class DiaryRepositoryImp(
             Resource.Success(true)
         }catch (e:Exception){
             e.printStackTrace()
+            Resource.Error(e)
+        }
+    }
+
+    override suspend fun searchForProductWithBarcode(barcode: String): Resource<Product?> {
+        return try {
+            val query = database.from(ProductTable)
+                .innerJoin(NutritionValuesTable, on = NutritionValuesTable.id eq ProductTable.nutritionValuesId)
+                .innerJoin(PriceTable, on = PriceTable.id eq ProductTable.priceId)
+                .select()
+                .where {
+                    ProductTable.barcode eq barcode
+                }
+                .limit(1)
+                .map {
+                    it.mapProduct()
+                }
+            if (query.isNotEmpty()){
+                Resource.Success(data = query[0])
+            }else{
+                Resource.Success(data = null)
+            }
+        }catch (e:Exception){
             Resource.Error(e)
         }
     }
