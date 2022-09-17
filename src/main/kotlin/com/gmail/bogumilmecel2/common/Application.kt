@@ -20,6 +20,11 @@ import com.gmail.bogumilmecel2.diary_feature.domain.use_case.diary.GetDiaryEntri
 import com.gmail.bogumilmecel2.diary_feature.domain.use_case.diary.InsertDiaryEntry
 import com.gmail.bogumilmecel2.diary_feature.domain.use_case.product.*
 import com.gmail.bogumilmecel2.diary_feature.routes.configureDiaryRoutes
+import com.gmail.bogumilmecel2.user.log.data.repository.LogRepositoryImp
+import com.gmail.bogumilmecel2.user.log.domain.use_case.GetLatestLogEntry
+import com.gmail.bogumilmecel2.user.log.domain.use_case.InsertLogEntry
+import com.gmail.bogumilmecel2.user.log.domain.use_case.LogUseCases
+import com.gmail.bogumilmecel2.user.log.routes.configureLogRoutes
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 
@@ -32,11 +37,20 @@ fun Application.module() {
         database = databaseManager.ktormDatabase
     )
 
+    val logRepository = LogRepositoryImp(
+        database = databaseManager.ktormDatabase
+    )
+
     val productUseCases = ProductUseCases(
         insertProduct = InsertProduct(diaryRepository),
         getProducts = GetProducts(diaryRepository),
         getProductHistory = GetProductHistory(diaryRepository),
         searchForProductWithBarcode = SearchForProductWithBarcode(diaryRepository)
+    )
+
+    val logUseCases = LogUseCases(
+        getLatestLogEntry = GetLatestLogEntry(logRepository),
+        insertLogEntry = InsertLogEntry(logRepository)
     )
 
     val diaryUseCases = DiaryUseCases(
@@ -89,7 +103,8 @@ fun Application.module() {
             )
         )
 
+        configureLogRoutes(
+            logUseCases = logUseCases
+        )
     }
-
-
 }

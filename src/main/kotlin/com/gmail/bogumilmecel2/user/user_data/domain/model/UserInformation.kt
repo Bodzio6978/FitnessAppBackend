@@ -1,4 +1,4 @@
-package com.gmail.bogumilmecel2.user.domain.model
+package com.gmail.bogumilmecel2.user.user_data.domain.model
 
 import kotlinx.serialization.Serializable
 
