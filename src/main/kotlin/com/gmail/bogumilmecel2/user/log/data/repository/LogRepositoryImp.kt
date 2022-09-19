@@ -12,14 +12,20 @@ class LogRepositoryImp(
     private val database: Database
 ):LogRepository {
 
-    override suspend fun saveLogEntry(entry: LogEntry, userId: Int): Resource<Boolean> {
+    override suspend fun saveLogEntry(entry: LogEntry, userId: Int): Resource<LogEntry> {
         return try {
-            database.insert(LogTable){
+            val key = database.insertAndGenerateKey(LogTable){
                 set(it.timestamp, entry.timestamp)
                 set(it.userId, userId)
                 set(it.streak, entry.streak)
-            }
-            Resource.Success(true)
+            } as Int
+            Resource.Success(
+                data = LogEntry(
+                    id = key,
+                    streak = entry.streak,
+                    timestamp = entry.timestamp
+                )
+            )
         }catch (e:Exception){
             Resource.Error(e)
         }

@@ -5,7 +5,7 @@ import com.gmail.bogumilmecel2.user.log.domain.model.LogEntry
 
 interface LogRepository {
 
-    suspend fun saveLogEntry(entry:LogEntry, userId: Int):Resource<Boolean>
+    suspend fun saveLogEntry(entry:LogEntry, userId: Int):Resource<LogEntry>
 
     suspend fun getLatestLogEntry(userId:Int):Resource<LogEntry>
 }

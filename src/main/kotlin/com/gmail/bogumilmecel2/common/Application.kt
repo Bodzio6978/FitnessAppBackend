@@ -48,9 +48,14 @@ fun Application.module() {
         searchForProductWithBarcode = SearchForProductWithBarcode(diaryRepository)
     )
 
+    val getLatestLogEntry = GetLatestLogEntry(logRepository)
+
     val logUseCases = LogUseCases(
-        getLatestLogEntry = GetLatestLogEntry(logRepository),
-        insertLogEntry = InsertLogEntry(logRepository)
+        getLatestLogEntry = getLatestLogEntry,
+        insertLogEntry = InsertLogEntry(
+            logRepository = logRepository,
+            getLatestLogEntry = getLatestLogEntry
+        )
     )
 
     val diaryUseCases = DiaryUseCases(

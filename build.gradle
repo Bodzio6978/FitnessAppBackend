@@ -35,4 +35,6 @@ dependencies {
     implementation("org.ktorm:ktorm-support-mysql:3.5.0")
 
     implementation 'commons-codec:commons-codec:1.15'
+
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
 }
