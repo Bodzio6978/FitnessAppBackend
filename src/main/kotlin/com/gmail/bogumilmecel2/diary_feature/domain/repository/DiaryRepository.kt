@@ -18,4 +18,5 @@ interface DiaryRepository {
     suspend fun insertProduct(product: Product):Resource<Product>
     suspend fun deleteDiaryEntry(diaryEntryId:Int, userId: Int):Resource<Boolean>
     suspend fun searchForProductWithBarcode(barcode:String):Resource<Product?>
+    suspend fun getUserCaloriesSum(date:String, userId: Int):Resource<List<Int>>
 }

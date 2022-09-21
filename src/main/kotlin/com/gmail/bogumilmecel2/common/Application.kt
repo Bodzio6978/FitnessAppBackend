@@ -14,10 +14,7 @@ import com.gmail.bogumilmecel2.common.plugins.configureLocations
 import com.gmail.bogumilmecel2.common.plugins.configureMonitoring
 import com.gmail.bogumilmecel2.common.plugins.configureSerialization
 import com.gmail.bogumilmecel2.diary_feature.data.repository.DiaryRepositoryImp
-import com.gmail.bogumilmecel2.diary_feature.domain.use_case.diary.DeleteDiaryEntry
-import com.gmail.bogumilmecel2.diary_feature.domain.use_case.diary.DiaryUseCases
-import com.gmail.bogumilmecel2.diary_feature.domain.use_case.diary.GetDiaryEntries
-import com.gmail.bogumilmecel2.diary_feature.domain.use_case.diary.InsertDiaryEntry
+import com.gmail.bogumilmecel2.diary_feature.domain.use_case.diary.*
 import com.gmail.bogumilmecel2.diary_feature.domain.use_case.product.*
 import com.gmail.bogumilmecel2.diary_feature.routes.configureDiaryRoutes
 import com.gmail.bogumilmecel2.user.log.data.repository.LogRepositoryImp
@@ -61,7 +58,8 @@ fun Application.module() {
     val diaryUseCases = DiaryUseCases(
         getDiaryEntries = GetDiaryEntries(diaryRepository),
         insertDiaryEntry = InsertDiaryEntry(diaryRepository),
-        deleteDiaryEntry = DeleteDiaryEntry(diaryRepository)
+        deleteDiaryEntry = DeleteDiaryEntry(diaryRepository),
+        getUserCaloriesSum = GetUserCaloriesSum(diaryRepository)
     )
 
     val authenticationRepository = AuthenticationRepositoryImp(

@@ -2,6 +2,7 @@ package com.gmail.bogumilmecel2.diary_feature.data.repository
 
 import com.gmail.bogumilmecel2.common.exception.NoDatabaseEntryException
 import com.gmail.bogumilmecel2.common.util.Resource
+import com.gmail.bogumilmecel2.common.util.extensions.calculateCalories
 import com.gmail.bogumilmecel2.common.util.extensions.formatToString
 import com.gmail.bogumilmecel2.common.util.extensions.mapProduct
 import com.gmail.bogumilmecel2.diary_feature.data.table.diary_entry.DiaryEntriesTable
@@ -73,9 +74,13 @@ class DiaryRepositoryImp(
 
     override suspend fun getProducts(text: String): Resource<List<Product>> {
         return try {
-            val query = database.from(ProductTable).innerJoin(PriceTable, on = PriceTable.id eq ProductTable.priceId)
+            val query = database.from(ProductTable)
+                .innerJoin(PriceTable, on = PriceTable.id eq ProductTable.priceId)
                 .innerJoin(NutritionValuesTable, on = NutritionValuesTable.id eq ProductTable.priceId)
                 .select()
+                .where {
+                    ProductTable.name like "%$text%"
+                }
                 .map {
                     it.mapProduct()
                 }
@@ -206,6 +211,32 @@ class DiaryRepositoryImp(
                 Resource.Success(data = null)
             }
         }catch (e:Exception){
+            Resource.Error(e)
+        }
+    }
+
+    override suspend fun getUserCaloriesSum(date: String, userId: Int): Resource<List<Int>> {
+        return try {
+            val sum = database.from(DiaryEntriesTable)
+                .innerJoin(ProductTable, on = ProductTable.id eq DiaryEntriesTable.productId)
+                .innerJoin(NutritionValuesTable, on = NutritionValuesTable.id eq ProductTable.nutritionValuesId)
+                .innerJoin(PriceTable, on = PriceTable.id eq ProductTable.priceId)
+                .select()
+                .where {
+                    (DiaryEntriesTable.userId eq userId) and (DiaryEntriesTable.date eq date)
+                }.map {
+                    DiaryEntry(
+                        id = it[DiaryEntriesTable.id] ?: -1,
+                        timeStamp = it[DiaryEntriesTable.timestamp] ?: System.currentTimeMillis(),
+                        date = it[DiaryEntriesTable.date] ?: Date(System.currentTimeMillis()).formatToString(),
+                        weight = it[DiaryEntriesTable.weight] ?: 0,
+                        product = it.mapProduct(),
+                        mealName = it[DiaryEntriesTable.mealName] ?: "Breakfast"
+                    ).calculateCalories()
+                }
+            return Resource.Success(sum)
+        }catch (e:Exception){
+            e.printStackTrace()
             Resource.Error(e)
         }
     }

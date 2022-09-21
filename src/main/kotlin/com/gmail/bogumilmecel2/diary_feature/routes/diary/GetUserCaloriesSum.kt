@@ -1,8 +1,8 @@
 package com.gmail.bogumilmecel2.diary_feature.routes.diary
 
 import com.gmail.bogumilmecel2.common.util.Resource
-import com.gmail.bogumilmecel2.diary_feature.domain.use_case.diary.GetDiaryEntries
-import com.gmail.bogumilmecel2.diary_feature.resources.DiaryEntries
+import com.gmail.bogumilmecel2.diary_feature.domain.use_case.diary.GetUserCaloriesSum
+import com.gmail.bogumilmecel2.diary_feature.resources.CaloriesSum
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -11,18 +11,18 @@ import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Route.configureGetDiaryEntriesRoute(
-    getDiaryEntries: GetDiaryEntries
+fun Route.configureGetUserCaloriesSumRoute(
+    getUserCaloriesSum: GetUserCaloriesSum
 ){
     authenticate {
-        get<DiaryEntries> { diaryEntry ->
-            val date = diaryEntry.date
+        get<CaloriesSum> {
+            val date = it.date
 
             val principal = call.principal<JWTPrincipal>()
             val principalId = principal?.getClaim("userId", String::class)?.toIntOrNull()
 
             principalId?.let { userId ->
-                val resource = getDiaryEntries(
+                val resource = getUserCaloriesSum(
                     date = date,
                     userId = userId
                 )

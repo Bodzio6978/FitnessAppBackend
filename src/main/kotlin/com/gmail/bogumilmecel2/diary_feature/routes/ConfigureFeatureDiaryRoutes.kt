@@ -4,6 +4,7 @@ import com.gmail.bogumilmecel2.diary_feature.domain.use_case.diary.DiaryUseCases
 import com.gmail.bogumilmecel2.diary_feature.domain.use_case.product.ProductUseCases
 import com.gmail.bogumilmecel2.diary_feature.routes.diary.configureDeleteDiaryEntryRoute
 import com.gmail.bogumilmecel2.diary_feature.routes.diary.configureGetDiaryEntriesRoute
+import com.gmail.bogumilmecel2.diary_feature.routes.diary.configureGetUserCaloriesSumRoute
 import com.gmail.bogumilmecel2.diary_feature.routes.diary.configurePostDiaryEntryRoute
 import com.gmail.bogumilmecel2.diary_feature.routes.product.configureGetProductHistoryRoute
 import com.gmail.bogumilmecel2.diary_feature.routes.product.configurePostNewProductRoute
@@ -27,5 +28,6 @@ fun Route.configureDiaryRoutes(
         configurePostDiaryEntryRoute(diaryUseCases.insertDiaryEntry)
         configureGetDiaryEntriesRoute(diaryUseCases.getDiaryEntries)
         configureDeleteDiaryEntryRoute(diaryUseCases.deleteDiaryEntry)
+        configureGetUserCaloriesSumRoute(diaryUseCases.getUserCaloriesSum)
     }
 }
