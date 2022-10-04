@@ -10,7 +10,7 @@ class GetLatestLogEntry(
 
     suspend operator fun invoke(
         userId: Int
-    ): Resource<LogEntry> {
+    ): Resource<LogEntry?> {
         return logRepository.getLatestLogEntry(
             userId = userId
         )

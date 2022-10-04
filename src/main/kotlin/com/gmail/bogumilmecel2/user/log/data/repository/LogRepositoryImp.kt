@@ -1,6 +1,5 @@
 package com.gmail.bogumilmecel2.user.log.data.repository
 
-import com.gmail.bogumilmecel2.common.exception.NoDatabaseEntryException
 import com.gmail.bogumilmecel2.common.util.Resource
 import com.gmail.bogumilmecel2.user.log.data.table.LogTable
 import com.gmail.bogumilmecel2.user.log.domain.model.LogEntry
@@ -27,12 +26,13 @@ class LogRepositoryImp(
                 )
             )
         }catch (e:Exception){
+            e.printStackTrace()
             Resource.Error(e)
         }
 
     }
 
-    override suspend fun getLatestLogEntry(userId: Int): Resource<LogEntry> {
+    override suspend fun getLatestLogEntry(userId: Int): Resource<LogEntry?> {
         return try {
             val query = database.from(LogTable)
                 .select()
@@ -48,12 +48,9 @@ class LogRepositoryImp(
                         streak = it[LogTable.streak] ?: -1
                     )
                 }
-            if (query.isNotEmpty()){
-                Resource.Success(data = query[0])
-            }else{
-                Resource.Error(NoDatabaseEntryException())
-            }
+            Resource.Success(data = query.getOrNull(0))
         }catch (e:Exception){
+            e.printStackTrace()
             Resource.Error(e)
         }
     }
