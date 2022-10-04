@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class Price(
     val id:Int,
     val value: Double = 0.0,
-    val forHowMuch: Int = 0
+    val currency: String = "zł"
 )

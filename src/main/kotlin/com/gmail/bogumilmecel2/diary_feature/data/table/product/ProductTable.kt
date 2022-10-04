@@ -13,5 +13,4 @@ object ProductTable: Table<ProductEntity>(tableName = "product"){
     val unit = varchar("unit").bindTo { it.unit }
     val nutritionValuesId = int("nutritionValuesId").bindTo { it.nutritionValuesId }
     val barcode = varchar("barcode").bindTo { it.barcode }
-    val priceId = int("priceId").bindTo { it.priceId }
 }

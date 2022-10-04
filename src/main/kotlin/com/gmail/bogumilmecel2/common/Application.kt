@@ -42,7 +42,8 @@ fun Application.module() {
         insertProduct = InsertProduct(diaryRepository),
         getProducts = GetProducts(diaryRepository),
         getProductHistory = GetProductHistory(diaryRepository),
-        searchForProductWithBarcode = SearchForProductWithBarcode(diaryRepository)
+        searchForProductWithBarcode = SearchForProductWithBarcode(diaryRepository),
+        addNewPrice = AddNewPrice(diaryRepository)
     )
 
     val getLatestLogEntry = GetLatestLogEntry(logRepository)

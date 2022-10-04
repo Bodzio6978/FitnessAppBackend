@@ -10,5 +10,4 @@ interface ProductEntity : Entity<ProductEntity> {
     val unit: String
     val nutritionValuesId: Int
     val barcode: String?
-    val priceId: Int
 }

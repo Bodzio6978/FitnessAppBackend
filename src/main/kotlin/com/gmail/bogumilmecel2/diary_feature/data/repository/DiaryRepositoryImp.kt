@@ -4,12 +4,14 @@ import com.gmail.bogumilmecel2.common.exception.NoDatabaseEntryException
 import com.gmail.bogumilmecel2.common.util.Resource
 import com.gmail.bogumilmecel2.common.util.extensions.calculateCalories
 import com.gmail.bogumilmecel2.common.util.extensions.formatToString
+import com.gmail.bogumilmecel2.common.util.extensions.mapFirstPrice
 import com.gmail.bogumilmecel2.common.util.extensions.mapProduct
 import com.gmail.bogumilmecel2.diary_feature.data.table.diary_entry.DiaryEntriesTable
 import com.gmail.bogumilmecel2.diary_feature.data.table.nutrition_values.NutritionValuesTable
 import com.gmail.bogumilmecel2.diary_feature.data.table.price.PriceTable
 import com.gmail.bogumilmecel2.diary_feature.data.table.product.ProductTable
 import com.gmail.bogumilmecel2.diary_feature.domain.model.diary_entry.DiaryEntry
+import com.gmail.bogumilmecel2.diary_feature.domain.model.price.Price
 import com.gmail.bogumilmecel2.diary_feature.domain.model.product.Product
 import com.gmail.bogumilmecel2.diary_feature.domain.repository.DiaryRepository
 import org.ktorm.database.Database
@@ -47,17 +49,21 @@ class DiaryRepositoryImp(
             val query = database.from(DiaryEntriesTable)
                 .innerJoin(ProductTable, on = ProductTable.id eq DiaryEntriesTable.productId)
                 .innerJoin(NutritionValuesTable, on = NutritionValuesTable.id eq ProductTable.nutritionValuesId)
-                .innerJoin(PriceTable, on = PriceTable.id eq ProductTable.priceId)
                 .select()
                 .where {
                     (DiaryEntriesTable.date eq date) and (DiaryEntriesTable.userId eq userId)
                 }.map {
+                    val productId = it[ProductTable.id] ?: -1
+                    val price = it.mapFirstPrice(
+                        productId = productId,
+                        database = database
+                    )
                     DiaryEntry(
                         id = it[DiaryEntriesTable.id] ?: -1,
                         timeStamp = it[DiaryEntriesTable.timestamp] ?: System.currentTimeMillis(),
                         date = it[DiaryEntriesTable.date] ?: Date(System.currentTimeMillis()).formatToString(),
                         weight = it[DiaryEntriesTable.weight] ?: 0,
-                        product = it.mapProduct(),
+                        product = it.mapProduct(price),
                         mealName = it[DiaryEntriesTable.mealName] ?: "Breakfast"
                     )
                 }
@@ -75,14 +81,18 @@ class DiaryRepositoryImp(
     override suspend fun getProducts(text: String): Resource<List<Product>> {
         return try {
             val query = database.from(ProductTable)
-                .innerJoin(PriceTable, on = PriceTable.id eq ProductTable.priceId)
-                .innerJoin(NutritionValuesTable, on = NutritionValuesTable.id eq ProductTable.priceId)
+                .innerJoin(NutritionValuesTable, on = NutritionValuesTable.id eq ProductTable.nutritionValuesId)
                 .select()
                 .where {
                     ProductTable.name like "%$text%"
                 }
                 .map {
-                    it.mapProduct()
+                    val productId = it[ProductTable.id] ?: -1
+                    val price = it.mapFirstPrice(
+                        productId = productId,
+                        database = database
+                    )
+                    it.mapProduct(price)
                 }
             Resource.Success(data = query)
         } catch (e: Exception) {
@@ -97,7 +107,12 @@ class DiaryRepositoryImp(
             val query = database.from(ProductTable).select().where {
                 ProductTable.id eq productId
             }.map {
-                it.mapProduct()
+                val currentProductId = it[ProductTable.id] ?: -1
+                val price = it.mapFirstPrice(
+                    productId = currentProductId,
+                    database = database
+                )
+                it.mapProduct(price)
             }
             if (query.isNotEmpty()) {
                 Resource.Success(data = query[0])
@@ -119,11 +134,6 @@ class DiaryRepositoryImp(
 
     override suspend fun insertProduct(product: Product): Resource<Product> {
         return try {
-            val insertedPriceId = database.insertAndGenerateKey(PriceTable){
-                set(it.value, product.price.value)
-                set(it.forHowMuch, product.price.forHowMuch)
-            } as Int
-
             val insertedNutritionValuesId = database.insertAndGenerateKey(NutritionValuesTable){
                 set(it.calories, product.nutritionValues.calories)
                 set(it.carbohydrates, product.nutritionValues.carbohydrates)
@@ -138,15 +148,11 @@ class DiaryRepositoryImp(
                 set(it.unit, product.unit)
                 set(it.nutritionValuesId, insertedNutritionValuesId)
                 set(it.barcode, product.barcode)
-                set(it.priceId, insertedPriceId)
             } as Int
 
             Resource.Success(
                 data = product.copy(
                     id = insertedProductId,
-                    price = product.price.copy(
-                        id = insertedPriceId
-                    ),
                     nutritionValues = product.nutritionValues.copy(
                         id = insertedNutritionValuesId
                     )
@@ -163,7 +169,6 @@ class DiaryRepositoryImp(
             val query = database.from(DiaryEntriesTable)
                 .innerJoin(ProductTable, on = ProductTable.id eq DiaryEntriesTable.productId)
                 .innerJoin(NutritionValuesTable, on = NutritionValuesTable.id eq ProductTable.nutritionValuesId)
-                .innerJoin(PriceTable, on = PriceTable.id eq ProductTable.priceId)
                 .select()
                 .limit(20)
                 .orderBy(DiaryEntriesTable.timestamp.desc())
@@ -171,7 +176,12 @@ class DiaryRepositoryImp(
                 .where {
                     DiaryEntriesTable.userId eq userId
                 }.map {
-                    it.mapProduct()
+                    val productId = it[ProductTable.id] ?: -1
+                    val price = it.mapFirstPrice(
+                        productId = productId,
+                        database = database
+                    )
+                    it.mapProduct(price)
                 }
             Resource.Success(query)
         }catch (e:Exception){
@@ -196,14 +206,18 @@ class DiaryRepositoryImp(
         return try {
             val query = database.from(ProductTable)
                 .innerJoin(NutritionValuesTable, on = NutritionValuesTable.id eq ProductTable.nutritionValuesId)
-                .innerJoin(PriceTable, on = PriceTable.id eq ProductTable.priceId)
                 .select()
                 .where {
                     ProductTable.barcode eq barcode
                 }
                 .limit(1)
                 .map {
-                    it.mapProduct()
+                    val productId = it[ProductTable.id] ?: -1
+                    val price = it.mapFirstPrice(
+                        productId = productId,
+                        database = database
+                    )
+                    it.mapProduct(price)
                 }
             if (query.isNotEmpty()){
                 Resource.Success(data = query[0])
@@ -220,7 +234,6 @@ class DiaryRepositoryImp(
             val sum = database.from(DiaryEntriesTable)
                 .innerJoin(ProductTable, on = ProductTable.id eq DiaryEntriesTable.productId)
                 .innerJoin(NutritionValuesTable, on = NutritionValuesTable.id eq ProductTable.nutritionValuesId)
-                .innerJoin(PriceTable, on = PriceTable.id eq ProductTable.priceId)
                 .select()
                 .where {
                     (DiaryEntriesTable.userId eq userId) and (DiaryEntriesTable.date eq date)
@@ -235,6 +248,49 @@ class DiaryRepositoryImp(
                     ).calculateCalories()
                 }
             return Resource.Success(sum)
+        }catch (e:Exception){
+            e.printStackTrace()
+            Resource.Error(e)
+        }
+    }
+
+    override suspend fun addNewPrice(productId: Int, price: Price): Resource<Price> {
+        return try {
+            val productPrice = database.from(PriceTable)
+                .select()
+                .where {
+                    (PriceTable.productId eq productId) and (PriceTable.currency eq price.currency)
+                }.map {
+                    Price(
+                        id = it[PriceTable.id] ?: -1,
+                        value = it[PriceTable.value] ?: 0.0,
+                        currency = it[PriceTable.currency] ?: ""
+                    )
+                }
+            if (productPrice.isEmpty()){
+                val newPriceId = database.insertAndGenerateKey(PriceTable){
+                    set(it.value, price.value)
+                    set(it.currency, price.currency)
+                    set(it.productId, productId)
+                } as Int
+                Resource.Success(
+                    data = price.copy(
+                        id = newPriceId
+                    )
+                )
+            } else {
+                val priceWithSelectedCurrency = productPrice[0]
+                val newPrice = priceWithSelectedCurrency.copy(
+                    value = (priceWithSelectedCurrency.value + price.value)/2
+                )
+                database.update(PriceTable){
+                    set(it.id, newPrice.id)
+                    set(it.value, newPrice.value)
+                    set(it.currency, price.currency)
+                    set(it.productId, productId)
+                }
+                Resource.Success(newPrice)
+            }
         }catch (e:Exception){
             e.printStackTrace()
             Resource.Error(e)

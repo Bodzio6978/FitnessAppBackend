@@ -6,20 +6,19 @@ import com.gmail.bogumilmecel2.diary_feature.data.table.product.ProductTable
 import com.gmail.bogumilmecel2.diary_feature.domain.model.nutrition_values.NutritionValues
 import com.gmail.bogumilmecel2.diary_feature.domain.model.price.Price
 import com.gmail.bogumilmecel2.diary_feature.domain.model.product.Product
-import org.ktorm.dsl.QueryRowSet
+import org.ktorm.database.Database
+import org.ktorm.dsl.*
 
-fun QueryRowSet.mapProduct():Product{
+fun QueryRowSet.mapProduct(
+    price: Price? = null
+): Product {
     return Product(
         id = this[ProductTable.id] ?: -1,
         name = this[ProductTable.name] ?: "",
         containerWeight = this[ProductTable.containerWeight] ?: 0,
         position = this[ProductTable.position] ?: 0,
         unit = this[ProductTable.unit] ?: "",
-        price = Price(
-            id = this[PriceTable.id] ?: 0,
-            value = this[PriceTable.value] ?: 0.0,
-            forHowMuch = this[PriceTable.forHowMuch] ?: 0
-        ),
+        price = price,
         nutritionValues = NutritionValues(
             id = this[NutritionValuesTable.id] ?: 0,
             calories = this[NutritionValuesTable.calories] ?: 0,
@@ -29,4 +28,21 @@ fun QueryRowSet.mapProduct():Product{
         ),
         barcode = this[ProductTable.barcode]
     )
+}
+
+fun QueryRowSet.mapFirstPrice(
+    productId: Int,
+    database: Database
+): Price? {
+    return database.from(PriceTable)
+        .select()
+        .where {
+            PriceTable.productId eq productId
+        }.map { priceRowSet ->
+            Price(
+                id = priceRowSet[PriceTable.id] ?: -1,
+                value = priceRowSet[PriceTable.value] ?: 0.0,
+                currency = priceRowSet[PriceTable.currency] ?: ""
+            )
+        }.firstOrNull()
 }
