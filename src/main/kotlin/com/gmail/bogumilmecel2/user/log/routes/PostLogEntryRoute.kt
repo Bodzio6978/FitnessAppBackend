@@ -22,7 +22,7 @@ fun Route.configurePostLogEntryRoute(
             principalId?.let { userId ->
                 logRequest?.let {
                     val resource = insertLogEntry(
-                        timestamp = logRequest?.timestamp!!,
+                        timestamp = logRequest.timestamp,
                         userId = userId
                     )
 

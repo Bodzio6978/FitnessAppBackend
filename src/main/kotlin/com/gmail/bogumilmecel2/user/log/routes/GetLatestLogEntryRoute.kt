@@ -16,7 +16,6 @@ fun Route.configureGetLatestLogEntryRoute(
         get("/latest") {
             val principal = call.principal<JWTPrincipal>()
             val principalId = principal?.getClaim("userId", String::class)?.toIntOrNull()
-            println(principalId.toString())
             principalId?.let { userId ->
                 val resource = getLatestLogEntry(
                     userId = userId

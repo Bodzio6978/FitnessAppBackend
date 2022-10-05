@@ -15,18 +15,20 @@ class InsertLogEntry(
         val newLogEntry:LogEntry = when(val latestLogEntryResource = getLatestLogEntry(userId = userId)){
             is Resource.Success -> {
                 latestLogEntryResource.data?.let { logEntry ->
-                    if (DateUtils.isSameDay(Date(timestamp-DateUtils.MILLIS_PER_DAY), Date(System.currentTimeMillis()))){
+                    if (DateUtils.isSameDay(Date(timestamp), Date(logEntry.timestamp))){
+                        println("today")
+                        return Resource.Success(data = logEntry)
+                    }
+                    if (DateUtils.isSameDay(Date(timestamp-DateUtils.MILLIS_PER_DAY), Date(logEntry.timestamp))){
+                        println("y")
                         LogEntry(
                             id = 0,
                             timestamp = System.currentTimeMillis(),
                             streak = logEntry.streak + 1
                         )
                     }else{
-                        LogEntry(
-                            id = 0,
-                            timestamp = System.currentTimeMillis(),
-                            streak = 1
-                        )
+                        println("else")
+                        LogEntry()
                     }
                 } ?: LogEntry()
             }
