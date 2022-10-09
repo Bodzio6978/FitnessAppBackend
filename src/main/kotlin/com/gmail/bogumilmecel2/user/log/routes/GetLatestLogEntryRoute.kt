@@ -30,6 +30,7 @@ fun Route.configureGetLatestLogEntryRoute(
 
                     is Resource.Success -> {
                         resource.data?.let { data ->
+                            println(data.toString())
                             call.respond(
                                 HttpStatusCode.OK,
                                 message = data

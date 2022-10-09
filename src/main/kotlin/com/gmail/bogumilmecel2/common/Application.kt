@@ -22,6 +22,11 @@ import com.gmail.bogumilmecel2.user.log.domain.use_case.GetLatestLogEntry
 import com.gmail.bogumilmecel2.user.log.domain.use_case.InsertLogEntry
 import com.gmail.bogumilmecel2.user.log.domain.use_case.LogUseCases
 import com.gmail.bogumilmecel2.user.log.routes.configureLogRoutes
+import com.gmail.bogumilmecel2.weight.data.repository.WeightRepositoryImp
+import com.gmail.bogumilmecel2.weight.domain.use_case.AddWeightEntry
+import com.gmail.bogumilmecel2.weight.domain.use_case.GetLatestWeightEntries
+import com.gmail.bogumilmecel2.weight.domain.use_case.WeightUseCases
+import com.gmail.bogumilmecel2.weight.routes.configureWeightRoutes
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 
@@ -35,6 +40,10 @@ fun Application.module() {
     )
 
     val logRepository = LogRepositoryImp(
+        database = databaseManager.ktormDatabase
+    )
+
+    val weightRepository = WeightRepositoryImp(
         database = databaseManager.ktormDatabase
     )
 
@@ -61,6 +70,11 @@ fun Application.module() {
         insertDiaryEntry = InsertDiaryEntry(diaryRepository),
         deleteDiaryEntry = DeleteDiaryEntry(diaryRepository),
         getUserCaloriesSum = GetUserCaloriesSum(diaryRepository)
+    )
+
+    val weightUseCases = WeightUseCases(
+        addWeightEntry = AddWeightEntry(weightRepository),
+        getLatestWeightEntries = GetLatestWeightEntries(weightRepository)
     )
 
     val authenticationRepository = AuthenticationRepositoryImp(
@@ -109,6 +123,10 @@ fun Application.module() {
 
         configureLogRoutes(
             logUseCases = logUseCases
+        )
+
+        configureWeightRoutes(
+            weightUseCases = weightUseCases
         )
     }
 }
