@@ -1,4 +1,4 @@
-package com.gmail.bogumilmecel2.diary_feature.data.table.nutrition_values
+package com.gmail.bogumilmecel2.diary_feature.data.table
 
 import com.gmail.bogumilmecel2.diary_feature.domain.model.nutrition_values.NutritionValuesEntity
 import org.ktorm.schema.Table

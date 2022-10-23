@@ -1,4 +1,4 @@
-package com.gmail.bogumilmecel2.diary_feature.data.table.product
+package com.gmail.bogumilmecel2.diary_feature.data.table
 
 import com.gmail.bogumilmecel2.diary_feature.domain.model.product.ProductEntity
 import org.ktorm.schema.Table

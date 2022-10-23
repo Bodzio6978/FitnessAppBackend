@@ -6,13 +6,12 @@ import com.gmail.bogumilmecel2.common.util.extensions.calculateCalories
 import com.gmail.bogumilmecel2.common.util.extensions.formatToString
 import com.gmail.bogumilmecel2.common.util.extensions.mapFirstPrice
 import com.gmail.bogumilmecel2.common.util.extensions.mapProduct
-import com.gmail.bogumilmecel2.diary_feature.data.table.diary_entry.DiaryEntriesTable
-import com.gmail.bogumilmecel2.diary_feature.data.table.nutrition_values.NutritionValuesTable
-import com.gmail.bogumilmecel2.diary_feature.data.table.price.PriceTable
-import com.gmail.bogumilmecel2.diary_feature.data.table.product.ProductTable
+import com.gmail.bogumilmecel2.diary_feature.data.table.*
 import com.gmail.bogumilmecel2.diary_feature.domain.model.diary_entry.DiaryEntry
 import com.gmail.bogumilmecel2.diary_feature.domain.model.price.Price
 import com.gmail.bogumilmecel2.diary_feature.domain.model.product.Product
+import com.gmail.bogumilmecel2.diary_feature.domain.model.recipe.Ingredient
+import com.gmail.bogumilmecel2.diary_feature.domain.model.recipe.Recipe
 import com.gmail.bogumilmecel2.diary_feature.domain.repository.DiaryRepository
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
@@ -22,9 +21,9 @@ class DiaryRepositoryImp(
     private val database: Database
 ) : DiaryRepository {
 
-    override suspend fun insertDiaryEntry(diaryEntry: DiaryEntry, userId: Int):Resource<DiaryEntry> {
+    override suspend fun insertDiaryEntry(diaryEntry: DiaryEntry, userId: Int): Resource<DiaryEntry> {
         return try {
-            val diaryEntryId = database.insertAndGenerateKey(DiaryEntriesTable){
+            val diaryEntryId = database.insertAndGenerateKey(DiaryEntriesTable) {
                 set(it.date, diaryEntry.date)
                 set(it.mealName, diaryEntry.mealName)
                 set(it.weight, diaryEntry.weight)
@@ -37,7 +36,7 @@ class DiaryRepositoryImp(
                     id = diaryEntryId
                 )
             )
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
             Resource.Error(e)
         }
@@ -68,7 +67,7 @@ class DiaryRepositoryImp(
                     )
                 }
             Resource.Success(data = query)
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
             Resource.Error(e)
         }
@@ -134,7 +133,7 @@ class DiaryRepositoryImp(
 
     override suspend fun insertProduct(product: Product): Resource<Product> {
         return try {
-            val insertedNutritionValuesId = database.insertAndGenerateKey(NutritionValuesTable){
+            val insertedNutritionValuesId = database.insertAndGenerateKey(NutritionValuesTable) {
                 set(it.calories, product.nutritionValues.calories)
                 set(it.carbohydrates, product.nutritionValues.carbohydrates)
                 set(it.protein, product.nutritionValues.protein)
@@ -184,7 +183,7 @@ class DiaryRepositoryImp(
                     it.mapProduct(price)
                 }
             Resource.Success(query)
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
             Resource.Error(e)
         }
@@ -192,11 +191,11 @@ class DiaryRepositoryImp(
 
     override suspend fun deleteDiaryEntry(diaryEntryId: Int, userId: Int): Resource<Boolean> {
         return try {
-            database.delete(DiaryEntriesTable){
+            database.delete(DiaryEntriesTable) {
                 (it.id eq diaryEntryId) and (it.userId eq userId)
             }
             Resource.Success(true)
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
             Resource.Error(e)
         }
@@ -219,12 +218,12 @@ class DiaryRepositoryImp(
                     )
                     it.mapProduct(price)
                 }
-            if (query.isNotEmpty()){
+            if (query.isNotEmpty()) {
                 Resource.Success(data = query[0])
-            }else{
+            } else {
                 Resource.Success(data = null)
             }
-        }catch (e:Exception){
+        } catch (e: Exception) {
             Resource.Error(e)
         }
     }
@@ -248,7 +247,7 @@ class DiaryRepositoryImp(
                     ).calculateCalories()
                 }
             return Resource.Success(sum)
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
             Resource.Error(e)
         }
@@ -267,8 +266,8 @@ class DiaryRepositoryImp(
                         currency = it[PriceTable.currency] ?: ""
                     )
                 }
-            if (productPrice.isEmpty()){
-                val newPriceId = database.insertAndGenerateKey(PriceTable){
+            if (productPrice.isEmpty()) {
+                val newPriceId = database.insertAndGenerateKey(PriceTable) {
                     set(it.value, price.value)
                     set(it.currency, price.currency)
                     set(it.productId, productId)
@@ -281,9 +280,9 @@ class DiaryRepositoryImp(
             } else {
                 val priceWithSelectedCurrency = productPrice[0]
                 val newPrice = priceWithSelectedCurrency.copy(
-                    value = (priceWithSelectedCurrency.value + price.value)/2
+                    value = (priceWithSelectedCurrency.value + price.value) / 2
                 )
-                database.update(PriceTable){
+                database.update(PriceTable) {
                     set(it.id, newPrice.id)
                     set(it.value, newPrice.value)
                     set(it.currency, price.currency)
@@ -291,7 +290,43 @@ class DiaryRepositoryImp(
                 }
                 Resource.Success(newPrice)
             }
-        }catch (e:Exception){
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(e)
+        }
+    }
+
+    override suspend fun addNewRecipe(userId: Int, recipe: Recipe): Resource<Recipe> {
+        return try {
+            val ingredients = mutableListOf<Ingredient>()
+            val recipeId = database.insertAndGenerateKey(RecipeTable) {
+                set(it.name, recipe.name)
+                set(it.imageUrl, recipe.imageUrl)
+                set(it.timeNeeded, recipe.timeNeeded)
+                set(it.difficulty, recipe.difficulty)
+                set(it.servings, recipe.servings)
+                set(it.timestamp, recipe.timestamp)
+                set(it.userId, userId)
+            } as Int
+            recipe.ingredients.forEach { ingredient ->
+                val ingredientId = database.insertAndGenerateKey(IngredientTable) {
+                    set(it.weight, ingredient.weight)
+                    set(it.productId, ingredient.product.id)
+                    set(it.recipeId, recipeId)
+                } as Int
+                ingredients.add(
+                    ingredient.copy(
+                        id = ingredientId
+                    )
+                )
+            }
+            Resource.Success(
+                data = recipe.copy(
+                    id = recipeId,
+                    ingredients = ingredients
+                )
+            )
+        } catch (e: Exception) {
             e.printStackTrace()
             Resource.Error(e)
         }

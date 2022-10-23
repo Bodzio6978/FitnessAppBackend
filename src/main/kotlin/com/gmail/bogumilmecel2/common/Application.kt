@@ -16,6 +16,8 @@ import com.gmail.bogumilmecel2.common.plugins.configureSerialization
 import com.gmail.bogumilmecel2.diary_feature.data.repository.DiaryRepositoryImp
 import com.gmail.bogumilmecel2.diary_feature.domain.use_case.diary.*
 import com.gmail.bogumilmecel2.diary_feature.domain.use_case.product.*
+import com.gmail.bogumilmecel2.diary_feature.domain.use_case.recipe.AddNewRecipe
+import com.gmail.bogumilmecel2.diary_feature.domain.use_case.recipe.RecipeUseCases
 import com.gmail.bogumilmecel2.diary_feature.routes.configureDiaryRoutes
 import com.gmail.bogumilmecel2.user.log.data.repository.LogRepositoryImp
 import com.gmail.bogumilmecel2.user.log.domain.use_case.GetLatestLogEntry
@@ -77,6 +79,10 @@ fun Application.module() {
         getLatestWeightEntries = GetLatestWeightEntries(weightRepository)
     )
 
+    val recipeUseCases = RecipeUseCases(
+        addNewRecipe = AddNewRecipe(diaryRepository = diaryRepository)
+    )
+
     val authenticationRepository = AuthenticationRepositoryImp(
         database = databaseManager.ktormDatabase
     )
@@ -103,7 +109,8 @@ fun Application.module() {
     routing {
         configureDiaryRoutes(
             productUseCases = productUseCases,
-            diaryUseCases = diaryUseCases
+            diaryUseCases = diaryUseCases,
+            recipeUseCases = recipeUseCases
         )
 
         configureAuthRoutes(

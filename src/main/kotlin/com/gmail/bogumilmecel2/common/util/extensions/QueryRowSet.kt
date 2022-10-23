@@ -1,8 +1,8 @@
 package com.gmail.bogumilmecel2.common.util.extensions
 
-import com.gmail.bogumilmecel2.diary_feature.data.table.nutrition_values.NutritionValuesTable
-import com.gmail.bogumilmecel2.diary_feature.data.table.price.PriceTable
-import com.gmail.bogumilmecel2.diary_feature.data.table.product.ProductTable
+import com.gmail.bogumilmecel2.diary_feature.data.table.NutritionValuesTable
+import com.gmail.bogumilmecel2.diary_feature.data.table.PriceTable
+import com.gmail.bogumilmecel2.diary_feature.data.table.ProductTable
 import com.gmail.bogumilmecel2.diary_feature.domain.model.nutrition_values.NutritionValues
 import com.gmail.bogumilmecel2.diary_feature.domain.model.price.Price
 import com.gmail.bogumilmecel2.diary_feature.domain.model.product.Product

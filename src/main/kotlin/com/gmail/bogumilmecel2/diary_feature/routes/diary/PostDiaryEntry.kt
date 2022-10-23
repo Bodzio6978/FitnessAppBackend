@@ -48,7 +48,6 @@ fun Route.configurePostDiaryEntryRoute(
                         }
                     }
                 } ?: kotlin.run {
-                    println("huj")
                     call.respond(
                         HttpStatusCode.Unauthorized
                     )

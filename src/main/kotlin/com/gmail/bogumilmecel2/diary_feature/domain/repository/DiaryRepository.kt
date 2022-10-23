@@ -4,6 +4,7 @@ import com.gmail.bogumilmecel2.common.util.Resource
 import com.gmail.bogumilmecel2.diary_feature.domain.model.diary_entry.DiaryEntry
 import com.gmail.bogumilmecel2.diary_feature.domain.model.price.Price
 import com.gmail.bogumilmecel2.diary_feature.domain.model.product.Product
+import com.gmail.bogumilmecel2.diary_feature.domain.model.recipe.Recipe
 
 interface DiaryRepository {
 
@@ -21,4 +22,5 @@ interface DiaryRepository {
     suspend fun searchForProductWithBarcode(barcode: String): Resource<Product?>
     suspend fun getUserCaloriesSum(date: String, userId: Int): Resource<List<Int>>
     suspend fun addNewPrice(productId: Int, price: Price): Resource<Price>
+    suspend fun addNewRecipe(userId: Int, recipe: Recipe): Resource<Recipe>
 }
