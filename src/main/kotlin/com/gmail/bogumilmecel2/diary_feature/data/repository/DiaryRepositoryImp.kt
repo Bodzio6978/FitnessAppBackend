@@ -28,7 +28,7 @@ class DiaryRepositoryImp(
                 set(it.mealName, diaryEntry.mealName)
                 set(it.weight, diaryEntry.weight)
                 set(it.productId, diaryEntry.product.id)
-                set(it.timestamp, diaryEntry.timeStamp)
+                set(it.timestamp, diaryEntry.timestamp)
                 set(it.userId, userId)
             } as Int
             Resource.Success(
@@ -59,7 +59,7 @@ class DiaryRepositoryImp(
                     )
                     DiaryEntry(
                         id = it[DiaryEntriesTable.id] ?: -1,
-                        timeStamp = it[DiaryEntriesTable.timestamp] ?: System.currentTimeMillis(),
+                        timestamp = it[DiaryEntriesTable.timestamp] ?: System.currentTimeMillis(),
                         date = it[DiaryEntriesTable.date] ?: Date(System.currentTimeMillis()).formatToString(),
                         weight = it[DiaryEntriesTable.weight] ?: 0,
                         product = it.mapProduct(price),
@@ -239,7 +239,7 @@ class DiaryRepositoryImp(
                 }.map {
                     DiaryEntry(
                         id = it[DiaryEntriesTable.id] ?: -1,
-                        timeStamp = it[DiaryEntriesTable.timestamp] ?: System.currentTimeMillis(),
+                        timestamp = it[DiaryEntriesTable.timestamp] ?: System.currentTimeMillis(),
                         date = it[DiaryEntriesTable.date] ?: Date(System.currentTimeMillis()).formatToString(),
                         weight = it[DiaryEntriesTable.weight] ?: 0,
                         product = it.mapProduct(),

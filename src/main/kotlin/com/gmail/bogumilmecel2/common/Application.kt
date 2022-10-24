@@ -24,6 +24,9 @@ import com.gmail.bogumilmecel2.user.log.domain.use_case.GetLatestLogEntry
 import com.gmail.bogumilmecel2.user.log.domain.use_case.InsertLogEntry
 import com.gmail.bogumilmecel2.user.log.domain.use_case.LogUseCases
 import com.gmail.bogumilmecel2.user.log.routes.configureLogRoutes
+import com.gmail.bogumilmecel2.user.user_data.data.repository.UserRepositoryImp
+import com.gmail.bogumilmecel2.user.user_data.domain.use_cases.*
+import com.gmail.bogumilmecel2.user.user_data.routes.configureUserDataRoutes
 import com.gmail.bogumilmecel2.weight.data.repository.WeightRepositoryImp
 import com.gmail.bogumilmecel2.weight.domain.use_case.AddWeightEntry
 import com.gmail.bogumilmecel2.weight.domain.use_case.GetLatestWeightEntries
@@ -48,6 +51,8 @@ fun Application.module() {
     val weightRepository = WeightRepositoryImp(
         database = databaseManager.ktormDatabase
     )
+
+    val userRepository = UserRepositoryImp(database = databaseManager.ktormDatabase)
 
     val productUseCases = ProductUseCases(
         insertProduct = InsertProduct(diaryRepository),
@@ -77,6 +82,13 @@ fun Application.module() {
     val weightUseCases = WeightUseCases(
         addWeightEntry = AddWeightEntry(weightRepository),
         getLatestWeightEntries = GetLatestWeightEntries(weightRepository)
+    )
+
+    val userDataUseCases = UserDataUseCases(
+        getUserInformation = GetUserInformation(userRepository = userRepository),
+        getUserNutritionValues = GetUserNutritionValues(userRepository = userRepository),
+        saveUserInformation = SaveUserInformation(userRepository = userRepository),
+        saveUserNutritionValues = SaveUserNutritionValues(userRepository = userRepository)
     )
 
     val recipeUseCases = RecipeUseCases(
@@ -134,6 +146,10 @@ fun Application.module() {
 
         configureWeightRoutes(
             weightUseCases = weightUseCases
+        )
+
+        configureUserDataRoutes(
+            userDataUseCases = userDataUseCases
         )
     }
 }

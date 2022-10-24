@@ -7,4 +7,6 @@ interface UserEntity:Entity<UserEntity> {
     val password:String
     val salt:String
     val id:Int
+    val nutritionValuesId: Int
+    val userInformationId: Int
 }

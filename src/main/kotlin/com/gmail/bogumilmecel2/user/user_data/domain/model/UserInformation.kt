@@ -9,7 +9,6 @@ data class UserInformation (
     val typeOfWork:Int = 0,
     val workoutInAWeek:Int = 0,
     val gender:Int = 0,
-    val userId:Int,
     val height:Double = 0.0,
     val currentWeight:Double = 0.0,
     val wantedWeight:Double = 0.0,

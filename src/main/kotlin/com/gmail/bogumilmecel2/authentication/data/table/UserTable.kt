@@ -10,4 +10,6 @@ object UserTable:Table<UserEntity>(tableName = "user") {
     val username = varchar("username").bindTo { it.username }
     val password = varchar("password").bindTo { it.password }
     val salt = varchar("salt").bindTo { it.salt }
+    val nutritionValuesId = int("nutritionValuesId").bindTo { it.nutritionValuesId }
+    val userInformationId = int("userInformationId").bindTo { it.userInformationId }
 }
