@@ -4,7 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserInformation (
-    val id:Int,
     val activityInADay:Int = 0,
     val typeOfWork:Int = 0,
     val workoutInAWeek:Int = 0,

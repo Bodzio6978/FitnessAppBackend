@@ -1,21 +1,29 @@
 package com.gmail.bogumilmecel2.common.data.database
 
-import org.ktorm.database.Database
+import com.gmail.bogumilmecel2.authentication.domain.model.user.User
+import com.gmail.bogumilmecel2.diary_feature.domain.model.product.Product
+import org.litote.kmongo.coroutine.CoroutineCollection
+import org.litote.kmongo.coroutine.coroutine
+import org.litote.kmongo.reactivestreams.KMongo
 
 class DatabaseManager {
 
     // config
-    private val hostname = "localhost"
     private val databaseName = "fitness_app"
-    private val username = "root"
-    private val password = "root"
+    private val username = System.getenv("MONGO_USER")
+    private val password = System.getenv("MONGO_PW")
 
     // database
-    var ktormDatabase: Database
-        private set
+    var client = KMongo.createClient(
+        connectionString = "mongodb+srv://FitnessApp:$password@cluster0.e8iazl3.mongodb.net/fitness_app?retryWrites=true&w=majority"
+    ).coroutine
+        .getDatabase(databaseName)
 
-    init {
-        val jdbcUrl = "jdbc:mysql://$hostname:3306/$databaseName?user=$username&password=$password&useSSL=false&allowPublicKeyRetrieval=true"
-        ktormDatabase = Database.connect(jdbcUrl)
+    fun provideUserCollection():CoroutineCollection<User>{
+        return client.getCollection()
+    }
+
+    fun provideProductCollection(): CoroutineCollection<Product>{
+        return client.getCollection()
     }
 }

@@ -13,7 +13,7 @@ fun Route.configureAddNewPriceRoute(
     addNewPrice: AddNewPrice
 ) {
     post("/{productId}/prices") {
-        val productId = call.parameters["productId"]?.toIntOrNull()
+        val productId = call.parameters["productId"]
         val price = call.receiveOrNull<Price>()
 
         if (productId!=null && price != null) {

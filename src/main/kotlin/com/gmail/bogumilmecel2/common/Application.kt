@@ -1,6 +1,7 @@
 package com.gmail.bogumilmecel2.common
 
-import com.gmail.bogumilmecel2.authentication.data.repository.AuthenticationRepositoryImp
+import ch.qos.logback.classic.Level
+import ch.qos.logback.classic.LoggerContext
 import com.gmail.bogumilmecel2.authentication.data.service.JwtTokenService
 import com.gmail.bogumilmecel2.authentication.data.service.SHA256HashingService
 import com.gmail.bogumilmecel2.authentication.domain.model.token.TokenConfig
@@ -19,7 +20,6 @@ import com.gmail.bogumilmecel2.diary_feature.domain.use_case.product.*
 import com.gmail.bogumilmecel2.diary_feature.domain.use_case.recipe.AddNewRecipe
 import com.gmail.bogumilmecel2.diary_feature.domain.use_case.recipe.RecipeUseCases
 import com.gmail.bogumilmecel2.diary_feature.routes.configureDiaryRoutes
-import com.gmail.bogumilmecel2.user.log.data.repository.LogRepositoryImp
 import com.gmail.bogumilmecel2.user.log.domain.use_case.GetLatestLogEntry
 import com.gmail.bogumilmecel2.user.log.domain.use_case.InsertLogEntry
 import com.gmail.bogumilmecel2.user.log.domain.use_case.LogUseCases
@@ -34,25 +34,28 @@ import com.gmail.bogumilmecel2.weight.domain.use_case.WeightUseCases
 import com.gmail.bogumilmecel2.weight.routes.configureWeightRoutes
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
+import org.slf4j.LoggerFactory
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 fun Application.module() {
+    val loggerContext = LoggerFactory.getILoggerFactory() as LoggerContext
+    val rootLogger = loggerContext.getLogger("org.mongodb.driver")
+    rootLogger.level = Level.OFF
+
     val databaseManager = DatabaseManager()
 
     val diaryRepository = DiaryRepositoryImp(
-        database = databaseManager.ktormDatabase
-    )
-
-    val logRepository = LogRepositoryImp(
-        database = databaseManager.ktormDatabase
+        recipeCol = databaseManager.client.getCollection("recipe_collection"),
+        productCol = databaseManager.client.getCollection("product_collection"),
+        diaryCol = databaseManager.client.getCollection("diary_collection")
     )
 
     val weightRepository = WeightRepositoryImp(
-        database = databaseManager.ktormDatabase
+        weightCol = databaseManager.client.getCollection("weight_collection")
     )
 
-    val userRepository = UserRepositoryImp(database = databaseManager.ktormDatabase)
+    val userRepository = UserRepositoryImp(userCol = databaseManager.client.getCollection("user_collection"))
 
     val productUseCases = ProductUseCases(
         insertProduct = InsertProduct(diaryRepository),
@@ -62,12 +65,12 @@ fun Application.module() {
         addNewPrice = AddNewPrice(diaryRepository)
     )
 
-    val getLatestLogEntry = GetLatestLogEntry(logRepository)
+    val getLatestLogEntry = GetLatestLogEntry(userRepository)
 
     val logUseCases = LogUseCases(
         getLatestLogEntry = getLatestLogEntry,
         insertLogEntry = InsertLogEntry(
-            logRepository = logRepository,
+            userRepository = userRepository,
             getLatestLogEntry = getLatestLogEntry
         )
     )
@@ -93,10 +96,6 @@ fun Application.module() {
 
     val recipeUseCases = RecipeUseCases(
         addNewRecipe = AddNewRecipe(diaryRepository = diaryRepository)
-    )
-
-    val authenticationRepository = AuthenticationRepositoryImp(
-        database = databaseManager.ktormDatabase
     )
 
     val tokenService = JwtTokenService()
@@ -129,11 +128,11 @@ fun Application.module() {
             tokenConfig = tokenConfig,
             authRoutes = AuthRoutes(
                 registerNewUser = RegisterNewUser(
-                    authenticationRepository = authenticationRepository,
+                    userRepository = userRepository,
                     hashingService = hashingService
                 ),
                 getUserByUsername = GetUserByUsername(
-                    authenticationRepository = authenticationRepository,
+                    userRepository = userRepository,
                     hashingService = hashingService,
                     tokenService = tokenService
                 )

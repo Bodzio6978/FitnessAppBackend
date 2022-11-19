@@ -14,10 +14,10 @@ fun Route.configureDeleteDiaryEntryRoute(
 ){
     authenticate {
         delete("/{diaryEntryId}") {
-            val diaryEntryId = call.parameters["diaryEntryId"]?.toIntOrNull()
+            val diaryEntryId = call.parameters["diaryEntryId"]
             diaryEntryId?.let { entryId ->
                 val principal = call.principal<JWTPrincipal>()
-                val principalId = principal?.getClaim("userId", String::class)?.toIntOrNull()
+                val principalId = principal?.getClaim("userId", String::class)
                 principalId?.let { userId ->
                     val resource = deleteDiaryEntry(
                         diaryEntryId = entryId,

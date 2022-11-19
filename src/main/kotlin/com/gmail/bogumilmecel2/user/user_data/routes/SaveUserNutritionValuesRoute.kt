@@ -17,7 +17,7 @@ fun Route.configureSaveUserNutritionValuesRoute(saveUserNutritionValues: SaveUse
             val nutritionValues = call.receiveOrNull<NutritionValues>()
             nutritionValues?.let {
                 val principal = call.principal<JWTPrincipal>()
-                val principalId = principal?.getClaim("userId", String::class)?.toIntOrNull()
+                val principalId = principal?.getClaim("userId", String::class)
                 principalId?.let { userId ->
                     val resource = saveUserNutritionValues(
                         nutritionValues = nutritionValues,
@@ -57,7 +57,6 @@ fun Route.configureSaveUserNutritionValuesRoute(saveUserNutritionValues: SaveUse
                 )
                 return@post
             }
-
         }
     }
 }

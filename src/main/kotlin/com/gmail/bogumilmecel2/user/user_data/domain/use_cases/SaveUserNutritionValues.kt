@@ -8,7 +8,7 @@ class SaveUserNutritionValues(
     private val userRepository: UserRepository
 ) {
 
-    suspend operator fun invoke(nutritionValues: NutritionValues, userId: Int): Resource<NutritionValues>{
+    suspend operator fun invoke(nutritionValues: NutritionValues, userId: String): Resource<Boolean>{
         return userRepository.saveUserNutritionValues(nutritionValues, userId)
     }
 }

@@ -17,7 +17,7 @@ fun Route.configureAddWeightEntryRoute(addWeightEntry: AddWeightEntry){
             val weightEntry = call.receiveOrNull<WeightEntry>()
             weightEntry?.let { entry ->
                 val principal = call.principal<JWTPrincipal>()
-                val principalId = principal?.getClaim("userId", String::class)?.toIntOrNull()
+                val principalId = principal?.getClaim("userId", String::class)
                 principalId?.let { userId ->
                     val resource = addWeightEntry(
                         weightEntry = entry,

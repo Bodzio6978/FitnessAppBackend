@@ -10,7 +10,7 @@ class AddWeightEntry(
 
     suspend operator fun invoke(
         weightEntry: WeightEntry,
-        userId: Int
+        userId: String
     ):Resource<WeightEntry>{
         return weightRepository.addWeightEntry(
             userId = userId,

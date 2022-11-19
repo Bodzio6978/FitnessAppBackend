@@ -8,7 +8,7 @@ class InsertProduct(
     private val diaryRepository: DiaryRepository
 ) {
 
-    suspend operator fun invoke(product:Product):Resource<Product>{
-        return diaryRepository.insertProduct(product = product)
+    suspend operator fun invoke(product:Product, userId: String):Resource<Product>{
+        return diaryRepository.insertProduct(product = product, userId = userId)
     }
 }

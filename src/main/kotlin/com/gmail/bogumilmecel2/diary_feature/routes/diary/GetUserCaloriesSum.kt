@@ -19,7 +19,7 @@ fun Route.configureGetUserCaloriesSumRoute(
             val date = it.date
 
             val principal = call.principal<JWTPrincipal>()
-            val principalId = principal?.getClaim("userId", String::class)?.toIntOrNull()
+            val principalId = principal?.getClaim("userId", String::class)
 
             principalId?.let { userId ->
                 val resource = getUserCaloriesSum(

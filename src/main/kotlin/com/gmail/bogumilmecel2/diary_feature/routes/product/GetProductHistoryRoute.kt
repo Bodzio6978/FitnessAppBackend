@@ -15,12 +15,9 @@ fun Route.configureGetProductHistoryRoute(
     authenticate {
         get("/history") {
             val principal = call.principal<JWTPrincipal>()
-            val principalId = principal?.getClaim("userId", String::class)?.toIntOrNull()
-
+            val principalId = principal?.getClaim("userId", String::class)
             principalId?.let { userId ->
-                val resource = getProductHistory(userId = userId)
-
-                when (resource) {
+                when (val resource = getProductHistory(userId = userId)) {
                     is Resource.Success -> {
                         resource.data?.let { data ->
                             call.respond(

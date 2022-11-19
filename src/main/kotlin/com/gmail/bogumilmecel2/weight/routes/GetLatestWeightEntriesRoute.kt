@@ -13,7 +13,7 @@ fun Route.configureGetLatestWeightEntriesRoute(getLatestWeightEntries: GetLatest
     authenticate {
         get("/latest") {
             val principal = call.principal<JWTPrincipal>()
-            val principalId = principal?.getClaim("userId", String::class)?.toIntOrNull()
+            val principalId = principal?.getClaim("userId", String::class)
             principalId?.let { userId ->
                 val resource = getLatestWeightEntries(
                     userId = userId

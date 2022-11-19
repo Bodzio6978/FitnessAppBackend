@@ -9,7 +9,7 @@ class GetUserCaloriesSum(
 
     suspend operator fun invoke(
         date:String,
-        userId:Int
+        userId:String
     ):Resource<List<Int>>{
         return diaryRepository.getUserCaloriesSum(
             date = date,

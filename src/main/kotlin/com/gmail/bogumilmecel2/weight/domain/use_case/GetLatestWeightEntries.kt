@@ -8,7 +8,7 @@ class GetLatestWeightEntries(
     private val weightRepository: WeightRepository
 ) {
     suspend operator fun invoke(
-        userId: Int
+        userId: String
     ): Resource<List<WeightEntry>> {
         return weightRepository.getLatestWeightEntries(
             userId = userId,

@@ -2,16 +2,16 @@ package com.gmail.bogumilmecel2.user.log.domain.use_case
 
 import com.gmail.bogumilmecel2.common.util.Resource
 import com.gmail.bogumilmecel2.user.log.domain.model.LogEntry
-import com.gmail.bogumilmecel2.user.log.domain.repository.LogRepository
+import com.gmail.bogumilmecel2.user.user_data.domain.repository.UserRepository
 
 class GetLatestLogEntry(
-    private val logRepository: LogRepository
+    private val userRepository: UserRepository
 ) {
 
     suspend operator fun invoke(
-        userId: Int
+        userId: String
     ): Resource<LogEntry?> {
-        return logRepository.getLatestLogEntry(
+        return userRepository.getLatestLogEntry(
             userId = userId
         )
     }

@@ -7,7 +7,7 @@ import com.gmail.bogumilmecel2.user.user_data.domain.repository.UserRepository
 class GetUserInformation(
     private val userRepository: UserRepository
 ) {
-    suspend operator fun invoke(userId: Int): Resource<UserInformation?> {
+    suspend operator fun invoke(userId: String): Resource<UserInformation?> {
         return userRepository.getUserInformation(userId)
     }
 }

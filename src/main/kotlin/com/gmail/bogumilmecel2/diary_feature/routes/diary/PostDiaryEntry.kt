@@ -16,10 +16,10 @@ fun Route.configurePostDiaryEntryRoute(
 ) {
     authenticate {
         post{
-            val callDiaryEntry = call.receiveOrNull<DiaryEntry>()
-            callDiaryEntry?.let { diaryEntry ->
+            val callDiaryEntryDto = call.receiveOrNull<DiaryEntry>()
+            callDiaryEntryDto?.let { diaryEntry ->
                 val principal = call.principal<JWTPrincipal>()
-                val principalId = principal?.getClaim("userId", String::class)?.toIntOrNull()
+                val principalId = principal?.getClaim("userId", String::class)
                 principalId?.let { userId ->
                     val resource = insertDiaryEntry(
                         diaryEntry = diaryEntry,

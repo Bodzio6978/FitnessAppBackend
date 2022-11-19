@@ -18,7 +18,7 @@ fun Route.configurePostLogEntryRoute(
         post("") {
             val logRequest = call.receiveOrNull<LogRequest>()
             val principal = call.principal<JWTPrincipal>()
-            val principalId = principal?.getClaim("userId", String::class)?.toIntOrNull()
+            val principalId = principal?.getClaim("userId", String::class)
             principalId?.let { userId ->
                 logRequest?.let {
                     val resource = insertLogEntry(

@@ -10,7 +10,7 @@ class AddNewRecipe(
 
     suspend operator fun invoke(
         recipe: Recipe,
-        userId: Int,
+        userId: String,
     ): Resource<Recipe>{
         return diaryRepository.addNewRecipe(
             userId = userId,

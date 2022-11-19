@@ -17,7 +17,7 @@ fun Route.configureSaveUserInformationRoute(saveUserInformation: SaveUserInforma
             val userInformation = call.receiveOrNull<UserInformation>()
             userInformation?.let {
                 val principal = call.principal<JWTPrincipal>()
-                val principalId = principal?.getClaim("userId", String::class)?.toIntOrNull()
+                val principalId = principal?.getClaim("userId", String::class)
                 principalId?.let { userId ->
                     val resource = saveUserInformation(
                         userInformation = userInformation,

@@ -1,51 +1,42 @@
 package com.gmail.bogumilmecel2.weight.data.repository
 
 import com.gmail.bogumilmecel2.common.util.Resource
-import com.gmail.bogumilmecel2.weight.data.table.WeightTable
+import com.gmail.bogumilmecel2.common.util.extensions.toObjectId
 import com.gmail.bogumilmecel2.weight.domain.model.WeightEntry
+import com.gmail.bogumilmecel2.weight.domain.model.WeightEntryDto
+import com.gmail.bogumilmecel2.weight.domain.model.toDto
+import com.gmail.bogumilmecel2.weight.domain.model.toWeightEntry
 import com.gmail.bogumilmecel2.weight.domain.repository.WeightRepository
-import org.ktorm.database.Database
-import org.ktorm.dsl.*
+import org.litote.kmongo.coroutine.CoroutineCollection
+import org.litote.kmongo.eq
 
 class WeightRepositoryImp(
-    private val database: Database
+    private val weightCol: CoroutineCollection<WeightEntryDto>
 ) : WeightRepository {
-    override suspend fun getLatestWeightEntries(userId: Int): Resource<List<WeightEntry>> {
+    override suspend fun getLatestWeightEntries(userId: String): Resource<List<WeightEntry>> {
         return try {
-            val entries = database.from(WeightTable)
-                .select()
-                .where { WeightTable.userId eq userId }
-                .orderBy(WeightTable.timestamp.desc())
-                .limit(14)
+            Resource.Success(data = weightCol.find(WeightEntryDto::userId eq userId.toObjectId())
+                .descendingSort(WeightEntryDto::timestamp).limit(14).toList()
                 .map {
-                    WeightEntry(
-                        id = it[WeightTable.id] ?: -1,
-                        value = it[WeightTable.value] ?: 0.0,
-                        timestamp = it[WeightTable.timestamp] ?: System.currentTimeMillis(),
-                    )
+                    it.toWeightEntry()
                 }
-            Resource.Success(data = entries)
-        }catch (e:Exception){
+            )
+        } catch (e: Exception) {
             e.printStackTrace()
             Resource.Error(e)
         }
     }
 
-    override suspend fun addWeightEntry(weightEntry: WeightEntry, userId: Int): Resource<WeightEntry> {
+    override suspend fun addWeightEntry(weightEntry: WeightEntry, userId: String): Resource<WeightEntry> {
         return try {
-            val key = database.insertAndGenerateKey(WeightTable){
-                set(it.value, weightEntry.value)
-                set(it.timestamp, weightEntry.timestamp)
-                set(it.userId, userId)
-            } as Int
-            Resource.Success(
-                data = WeightEntry(
-                    id = key,
-                    value = weightEntry.value,
-                    timestamp = weightEntry.timestamp
+            weightCol.insertOne(weightEntry.toDto(userId)).insertedId?.asObjectId()?.let {
+                Resource.Success(
+                    data = weightEntry.copy(
+                        id = it.toString()
+                    )
                 )
-            )
-        }catch (e:Exception){
+            } ?: Resource.Error(NullPointerException())
+        } catch (e: Exception) {
             e.printStackTrace()
             Resource.Error(e)
         }

@@ -7,7 +7,7 @@ import com.gmail.bogumilmecel2.user.user_data.domain.repository.UserRepository
 class GetUserNutritionValues(
     private val userRepository: UserRepository
 ) {
-    suspend operator fun invoke(userId: Int):Resource<NutritionValues?>{
+    suspend operator fun invoke(userId: String):Resource<NutritionValues?>{
         return userRepository.getUserNutritionValues(userId = userId)
     }
 }

@@ -6,14 +6,17 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Product(
-    val id:Int = -1,
-    val name: String = "White rice",
+    val id:String? = null,
+    val name: String = "",
     val containerWeight: Int = 0,
+    val timestamp:Long = System.currentTimeMillis(),
     val position: Int = 0,
     val unit: String = "g",
     val nutritionValues: NutritionValues = NutritionValues(),
     val barcode: String? = "",
-    val price: Price? = null
+    val price: Price? = null,
+    val username: String = "",
+    val userId: String = ""
 )
 
 

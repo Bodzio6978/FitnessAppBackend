@@ -8,7 +8,7 @@ class GetProductHistory(
     private val diaryRepository: DiaryRepository
 ) {
 
-    suspend operator fun invoke(userId:Int): Resource<List<Product>>{
+    suspend operator fun invoke(userId:String): Resource<List<Product>>{
         return diaryRepository.getProductHistory(userId)
     }
 }

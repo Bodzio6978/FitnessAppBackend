@@ -8,8 +8,8 @@ class DeleteDiaryEntry(
 ) {
 
     suspend operator fun invoke(
-        diaryEntryId:Int,
-        userId:Int
+        diaryEntryId:String,
+        userId:String
     ):Resource<Boolean>{
         return diaryRepository.deleteDiaryEntry(
             diaryEntryId = diaryEntryId,

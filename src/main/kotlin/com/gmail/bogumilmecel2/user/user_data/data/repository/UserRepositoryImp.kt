@@ -1,38 +1,26 @@
 package com.gmail.bogumilmecel2.user.user_data.data.repository
 
-import com.gmail.bogumilmecel2.authentication.data.table.UserTable
+import com.gmail.bogumilmecel2.authentication.domain.model.user.User
+import com.gmail.bogumilmecel2.authentication.domain.model.user.UserDto
+import com.gmail.bogumilmecel2.authentication.domain.model.user.toDto
+import com.gmail.bogumilmecel2.authentication.domain.model.user.toUser
 import com.gmail.bogumilmecel2.common.util.Resource
-import com.gmail.bogumilmecel2.diary_feature.data.table.NutritionValuesTable
+import com.gmail.bogumilmecel2.common.util.extensions.toObjectId
 import com.gmail.bogumilmecel2.diary_feature.domain.model.nutrition_values.NutritionValues
-import com.gmail.bogumilmecel2.user.user_data.data.table.UserInformationTable
+import com.gmail.bogumilmecel2.user.log.domain.model.LogEntry
 import com.gmail.bogumilmecel2.user.user_data.domain.model.UserInformation
 import com.gmail.bogumilmecel2.user.user_data.domain.repository.UserRepository
-import org.ktorm.database.Database
-import org.ktorm.dsl.*
+import org.litote.kmongo.coroutine.CoroutineCollection
+import org.litote.kmongo.eq
+import org.litote.kmongo.setValue
 
 class UserRepositoryImp(
-    private val database: Database
+    private val userCol: CoroutineCollection<UserDto>
 ) : UserRepository {
 
-    override suspend fun saveUserInformation(userInformation: UserInformation, userId: Int): Resource<UserInformation> {
+    override suspend fun saveUserInformation(userInformation: UserInformation, userId: String): Resource<Boolean> {
         return try {
-            val insertedUserInformationId = database.insertAndGenerateKey(UserInformationTable) {
-                set(it.activityInADay, userInformation.activityInADay)
-                set(it.typeOfWork, userInformation.typeOfWork)
-                set(it.workoutInAWeek, userInformation.workoutInAWeek)
-                set(it.gender, userInformation.gender)
-                set(it.height, userInformation.height)
-                set(it.currentWeight, userInformation.currentWeight)
-                set(it.wantedWeight, userInformation.wantedWeight)
-                set(it.age, userInformation.age)
-            } as Int
-            database.update(UserTable) {
-                set(it.userInformationId, insertedUserInformationId)
-                where {
-                    it.id eq userId
-                }
-            }
-            Resource.Success(userInformation.copy(id = insertedUserInformationId))
+            Resource.Success(userCol.updateOneById(userId, setValue(User::userInformation, userInformation)).wasAcknowledged())
         } catch (e: Exception) {
             e.printStackTrace()
             Resource.Error(e)
@@ -41,70 +29,71 @@ class UserRepositoryImp(
 
     override suspend fun saveUserNutritionValues(
         nutritionValues: NutritionValues,
-        userId: Int
-    ): Resource<NutritionValues> {
+        userId: String
+    ): Resource<Boolean> {
         return try {
-            val insertedNutritionValuesId = database.insertAndGenerateKey(NutritionValuesTable) {
-                set(it.calories, nutritionValues.calories)
-                set(it.carbohydrates, nutritionValues.carbohydrates)
-                set(it.protein, nutritionValues.protein)
-                set(it.fat, nutritionValues.fat)
-            } as Int
-            database.update(UserTable) {
-                set(it.nutritionValuesId, insertedNutritionValuesId)
-                where {
-                    it.id eq userId
-                }
-            }
-            Resource.Success(nutritionValues.copy(id = insertedNutritionValuesId))
+            Resource.Success(userCol.updateOneById(userId, setValue(User::nutritionValues, nutritionValues)).wasAcknowledged())
         } catch (e: Exception) {
             e.printStackTrace()
             Resource.Error(e)
         }
     }
 
-    override suspend fun getUserNutritionValues(userId: Int): Resource<NutritionValues?> {
+    override suspend fun getUserNutritionValues(userId: String): Resource<NutritionValues?> {
         return try {
-            val userNutritionValues = database.from(NutritionValuesTable)
-                .innerJoin(UserTable, on = UserTable.nutritionValuesId eq NutritionValuesTable.id)
-                .select()
-                .limit(1)
-                .map {
-                    NutritionValues(
-                        id = it[NutritionValuesTable.id] ?: -1,
-                        calories = it[NutritionValuesTable.calories] ?: 0,
-                        carbohydrates = it[NutritionValuesTable.carbohydrates] ?: 0.0,
-                        protein = it[NutritionValuesTable.protein] ?: 0.0,
-                        fat = it[NutritionValuesTable.fat] ?: 0.0
-                    )
-                }.firstOrNull()
-            Resource.Success(userNutritionValues)
+            Resource.Success(userCol.findOneById(userId)?.nutritionValues)
         } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(e)
+        }
+    }
+
+    override suspend fun getUserInformation(userId: String): Resource<UserInformation?> {
+        return try {
+            Resource.Success(userCol.findOneById(userId)?.userInformation)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(e)
+        }
+    }
+
+    override suspend fun saveLogEntry(entry: LogEntry, userId: String): Resource<LogEntry> {
+        return try {
+            userCol.updateOneById(userId, setValue(UserDto::latestLogEntry, entry))
+            Resource.Success(
+                data = LogEntry(
+                    streak = entry.streak,
+                    timestamp = entry.timestamp
+                )
+            )
+        }catch (e:Exception){
+            e.printStackTrace()
             Resource.Error(e)
         }
 
     }
 
-    override suspend fun getUserInformation(userId: Int): Resource<UserInformation?> {
+    override suspend fun getLatestLogEntry(userId: String): Resource<LogEntry?> {
         return try {
-            val item = database.from(UserTable)
-                .innerJoin(UserTable, on = UserTable.userInformationId eq UserInformationTable.id)
-                .select()
-                .limit(1)
-                .map {
-                    UserInformation(
-                        id = it[UserInformationTable.id] ?: -1,
-                        activityInADay = it[UserInformationTable.activityInADay] ?: 0,
-                        typeOfWork = it[UserInformationTable.typeOfWork] ?: 0,
-                        workoutInAWeek = it[UserInformationTable.workoutInAWeek] ?: 0,
-                        gender = it[UserInformationTable.gender] ?: 0,
-                        height = it[UserInformationTable.height] ?: 0.0,
-                        currentWeight = it[UserInformationTable.currentWeight] ?: 0.0,
-                        wantedWeight = it[UserInformationTable.wantedWeight] ?: 0.0,
-                        age = it[UserInformationTable.age] ?: 0,
-                    )
-                }.firstOrNull()
-            Resource.Success(item)
+            Resource.Success(data = userCol.findOneById(userId.toObjectId())?.latestLogEntry)
+        }catch (e:Exception){
+            e.printStackTrace()
+            Resource.Error(e)
+        }
+    }
+
+    override suspend fun getUserByUsername(username: String): Resource<User?> {
+        return try {
+            Resource.Success(userCol.findOne(User::username eq username)?.toUser())
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(e)
+        }
+    }
+
+    override suspend fun registerNewUser(user: User): Resource<Boolean> {
+        return try {
+            Resource.Success(userCol.insertOne(user.toDto()).wasAcknowledged())
         } catch (e: Exception) {
             e.printStackTrace()
             Resource.Error(e)

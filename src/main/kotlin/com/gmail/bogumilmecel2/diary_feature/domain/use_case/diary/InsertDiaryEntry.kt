@@ -2,6 +2,7 @@ package com.gmail.bogumilmecel2.diary_feature.domain.use_case.diary
 
 import com.gmail.bogumilmecel2.common.util.Resource
 import com.gmail.bogumilmecel2.diary_feature.domain.model.diary_entry.DiaryEntry
+import com.gmail.bogumilmecel2.diary_feature.domain.model.diary_entry.DiaryEntryDto
 import com.gmail.bogumilmecel2.diary_feature.domain.repository.DiaryRepository
 
 class InsertDiaryEntry(
@@ -10,8 +11,8 @@ class InsertDiaryEntry(
 
     suspend operator fun invoke(
         diaryEntry: DiaryEntry,
-        userId:Int
-    ):Resource<DiaryEntry>{
+        userId:String
+    ):Resource<DiaryEntryDto>{
         return diaryRepository.insertDiaryEntry(
             diaryEntry = diaryEntry,
             userId = userId

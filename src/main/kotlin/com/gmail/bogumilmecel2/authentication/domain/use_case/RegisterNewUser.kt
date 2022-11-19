@@ -1,18 +1,18 @@
 package com.gmail.bogumilmecel2.authentication.domain.use_case
 
 import com.gmail.bogumilmecel2.authentication.domain.model.user.User
-import com.gmail.bogumilmecel2.authentication.domain.repository.AuthenticationRepository
 import com.gmail.bogumilmecel2.authentication.domain.service.HashingService
 import com.gmail.bogumilmecel2.common.util.Resource
+import com.gmail.bogumilmecel2.user.user_data.domain.repository.UserRepository
 
 class RegisterNewUser(
-    private val authenticationRepository: AuthenticationRepository,
+    private val userRepository: UserRepository,
     private val hashingService: HashingService
 ) {
     suspend operator fun invoke(
         username: String,
         password:String
-    ): Resource<Int> {
+    ): Resource<Boolean> {
         val saltedHash = hashingService.generateSaltedHash(password)
 
         val user = User(
@@ -21,7 +21,7 @@ class RegisterNewUser(
             salt = saltedHash.salt
         )
 
-        return authenticationRepository.registerNewUser(
+        return userRepository.registerNewUser(
             user = user
         )
     }

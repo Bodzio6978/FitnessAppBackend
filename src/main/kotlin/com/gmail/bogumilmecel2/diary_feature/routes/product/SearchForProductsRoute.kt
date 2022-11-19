@@ -1,6 +1,5 @@
 package com.gmail.bogumilmecel2.diary_feature.routes.product
 
-import com.gmail.bogumilmecel2.common.exception.NoDatabaseEntryException
 import com.gmail.bogumilmecel2.common.util.Resource
 import com.gmail.bogumilmecel2.diary_feature.domain.use_case.product.GetProducts
 import io.ktor.http.*
@@ -22,7 +21,7 @@ fun Route.configureSearchForProductWithTextRoute(
         val resource = getProducts(searchText)
 
         if (resource is Resource.Error){
-            if (resource.error is NoDatabaseEntryException){
+            if (resource.error is NullPointerException){
                 call.respond(HttpStatusCode.NotFound)
             }else{
                 call.respond(HttpStatusCode.BadRequest)
