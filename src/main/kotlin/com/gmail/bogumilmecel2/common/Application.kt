@@ -20,18 +20,18 @@ import com.gmail.bogumilmecel2.diary_feature.domain.use_case.product.*
 import com.gmail.bogumilmecel2.diary_feature.domain.use_case.recipe.AddNewRecipe
 import com.gmail.bogumilmecel2.diary_feature.domain.use_case.recipe.RecipeUseCases
 import com.gmail.bogumilmecel2.diary_feature.routes.configureDiaryRoutes
+import com.gmail.bogumilmecel2.user.log.domain.use_case.CheckLatestLogEntry
 import com.gmail.bogumilmecel2.user.log.domain.use_case.GetLatestLogEntry
 import com.gmail.bogumilmecel2.user.log.domain.use_case.InsertLogEntry
-import com.gmail.bogumilmecel2.user.log.domain.use_case.LogUseCases
 import com.gmail.bogumilmecel2.user.log.routes.configureLogRoutes
 import com.gmail.bogumilmecel2.user.user_data.data.repository.UserRepositoryImp
 import com.gmail.bogumilmecel2.user.user_data.domain.use_cases.*
 import com.gmail.bogumilmecel2.user.user_data.routes.configureUserDataRoutes
-import com.gmail.bogumilmecel2.weight.data.repository.WeightRepositoryImp
-import com.gmail.bogumilmecel2.weight.domain.use_case.AddWeightEntry
-import com.gmail.bogumilmecel2.weight.domain.use_case.GetLatestWeightEntries
-import com.gmail.bogumilmecel2.weight.domain.use_case.WeightUseCases
-import com.gmail.bogumilmecel2.weight.routes.configureWeightRoutes
+import com.gmail.bogumilmecel2.user.weight.data.repository.WeightRepositoryImp
+import com.gmail.bogumilmecel2.user.weight.domain.use_case.AddWeightEntry
+import com.gmail.bogumilmecel2.user.weight.domain.use_case.GetLatestWeightEntries
+import com.gmail.bogumilmecel2.user.weight.domain.use_case.WeightUseCases
+import com.gmail.bogumilmecel2.user.weight.routes.configureWeightRoutes
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import org.slf4j.LoggerFactory
@@ -66,14 +66,13 @@ fun Application.module() {
     )
 
     val getLatestLogEntry = GetLatestLogEntry(userRepository)
+    val insertLogEntry = InsertLogEntry(userRepository)
 
-    val logUseCases = LogUseCases(
+    val checkLatestLogEntry = CheckLatestLogEntry(
         getLatestLogEntry = getLatestLogEntry,
-        insertLogEntry = InsertLogEntry(
-            userRepository = userRepository,
-            getLatestLogEntry = getLatestLogEntry
-        )
+        insertLogEntry = insertLogEntry
     )
+
 
     val diaryUseCases = DiaryUseCases(
         getDiaryEntries = GetDiaryEntries(diaryRepository),
@@ -140,7 +139,7 @@ fun Application.module() {
         )
 
         configureLogRoutes(
-            logUseCases = logUseCases
+            checkLatestLogEntry = checkLatestLogEntry
         )
 
         configureWeightRoutes(

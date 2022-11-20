@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class LogEntry(
-    val streak:Int = 0,
+    val streak:Int = 1,
     val timestamp:Long = System.currentTimeMillis()
 )

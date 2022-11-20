@@ -1,12 +1,12 @@
-package com.gmail.bogumilmecel2.weight.data.repository
+package com.gmail.bogumilmecel2.user.weight.data.repository
 
 import com.gmail.bogumilmecel2.common.util.Resource
 import com.gmail.bogumilmecel2.common.util.extensions.toObjectId
-import com.gmail.bogumilmecel2.weight.domain.model.WeightEntry
-import com.gmail.bogumilmecel2.weight.domain.model.WeightEntryDto
-import com.gmail.bogumilmecel2.weight.domain.model.toDto
-import com.gmail.bogumilmecel2.weight.domain.model.toWeightEntry
-import com.gmail.bogumilmecel2.weight.domain.repository.WeightRepository
+import com.gmail.bogumilmecel2.user.weight.domain.model.WeightEntry
+import com.gmail.bogumilmecel2.user.weight.domain.model.WeightEntryDto
+import com.gmail.bogumilmecel2.user.weight.domain.model.toDto
+import com.gmail.bogumilmecel2.user.weight.domain.model.toWeightEntry
+import com.gmail.bogumilmecel2.user.weight.domain.repository.WeightRepository
 import org.litote.kmongo.coroutine.CoroutineCollection
 import org.litote.kmongo.eq
 

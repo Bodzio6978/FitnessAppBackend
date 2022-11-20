@@ -4,7 +4,7 @@ import com.gmail.bogumilmecel2.common.util.extensions.toObjectId
 import org.bson.types.ObjectId
 
 fun Recipe.toDto(userId: ObjectId): RecipeDto = RecipeDto(
-    id = id.toObjectId(),
+    _id = id.toObjectId(),
     name = name,
     ingredients = ingredients,
     timestamp = timestamp,
@@ -17,7 +17,7 @@ fun Recipe.toDto(userId: ObjectId): RecipeDto = RecipeDto(
 )
 
 fun RecipeDto.toObject(): Recipe = Recipe(
-    id = id.toString(),
+    id = _id.toString(),
     name = name,
     ingredients = ingredients,
     timestamp = timestamp,

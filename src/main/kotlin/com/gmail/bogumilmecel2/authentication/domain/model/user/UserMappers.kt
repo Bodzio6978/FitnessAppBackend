@@ -3,7 +3,7 @@ package com.gmail.bogumilmecel2.authentication.domain.model.user
 import com.gmail.bogumilmecel2.common.util.extensions.toObjectId
 
 fun User.toDto(): UserDto = UserDto(
-     id = id.toObjectId(),
+     _id = id.toObjectId(),
      username = username,
      password = password,
      salt = salt,
@@ -13,7 +13,7 @@ fun User.toDto(): UserDto = UserDto(
 )
 
 fun UserDto.toUser():User = User(
-     id = id.toString(),
+     id = _id.toString(),
      username = username,
      password = password,
      salt = salt,

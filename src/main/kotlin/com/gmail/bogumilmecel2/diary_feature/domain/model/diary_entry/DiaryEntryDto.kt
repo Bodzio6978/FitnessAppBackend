@@ -6,7 +6,7 @@ import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
 
 data class DiaryEntryDto(
-    @BsonId val id: ObjectId = ObjectId(),
+    @BsonId val _id: ObjectId = ObjectId(),
     val name: String,
     val unit: String,
     val nutritionValues: NutritionValues,

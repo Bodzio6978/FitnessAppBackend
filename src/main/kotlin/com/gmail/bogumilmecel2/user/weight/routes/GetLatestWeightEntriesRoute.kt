@@ -1,7 +1,7 @@
-package com.gmail.bogumilmecel2.weight.routes
+package com.gmail.bogumilmecel2.user.weight.routes
 
 import com.gmail.bogumilmecel2.common.util.Resource
-import com.gmail.bogumilmecel2.weight.domain.use_case.GetLatestWeightEntries
+import com.gmail.bogumilmecel2.user.weight.domain.use_case.GetLatestWeightEntries
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*

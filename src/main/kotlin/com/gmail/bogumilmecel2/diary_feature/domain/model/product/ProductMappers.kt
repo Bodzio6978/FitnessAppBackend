@@ -3,7 +3,7 @@ package com.gmail.bogumilmecel2.diary_feature.domain.model.product
 import com.gmail.bogumilmecel2.common.util.extensions.toObjectId
 
 fun Product.toDto(userId: String): ProductDto = ProductDto(
-    id = id.toObjectId(),
+    _id = id.toObjectId(),
     name = name,
     containerWeight = containerWeight,
     position = position,
@@ -17,7 +17,7 @@ fun Product.toDto(userId: String): ProductDto = ProductDto(
 )
 
 fun ProductDto.toProduct(): Product = Product(
-    id = id.toString(),
+    id = _id.toString(),
     name = name,
     containerWeight = containerWeight,
     position = position,

@@ -2,6 +2,7 @@ package com.gmail.bogumilmecel2.diary_feature.data.repository
 
 import com.gmail.bogumilmecel2.common.util.Resource
 import com.gmail.bogumilmecel2.common.util.extensions.toObjectId
+import com.gmail.bogumilmecel2.diary_feature.domain.model.CaloriesSumResponse
 import com.gmail.bogumilmecel2.diary_feature.domain.model.diary_entry.DiaryEntry
 import com.gmail.bogumilmecel2.diary_feature.domain.model.diary_entry.DiaryEntryDto
 import com.gmail.bogumilmecel2.diary_feature.domain.model.diary_entry.toDiaryEntry
@@ -29,7 +30,7 @@ class DiaryRepositoryImp(
         return try {
             val insertedDiaryEntryId = diaryCol.insertOne(diaryEntry.toDto(userId)).insertedId?.asObjectId()
             if (insertedDiaryEntryId?.isObjectId == true) {
-                val newDiaryEntry = diaryEntry.toDto(userId).copy(id = insertedDiaryEntryId.value)
+                val newDiaryEntry = diaryEntry.toDto(userId).copy(_id = insertedDiaryEntryId.value)
                 Resource.Success(newDiaryEntry)
             } else {
                 throw NullPointerException()
@@ -54,7 +55,7 @@ class DiaryRepositoryImp(
     override suspend fun getDiaryEntry(id: String): Resource<DiaryEntry?> {
         return try {
             Resource.Success(
-                diaryCol.findOne(DiaryEntryDto::id eq id.toObjectId())?.toDiaryEntry()
+                diaryCol.findOne(DiaryEntryDto::_id eq id.toObjectId())?.toDiaryEntry()
             )
         } catch (e: Exception) {
             e.printStackTrace()
@@ -77,7 +78,7 @@ class DiaryRepositoryImp(
         return try {
             val history = mutableListOf<Product>()
             diaryCol.find(DiaryEntryDto::userId eq userId.toObjectId()).limit(20).toList().map {
-                it.product.id?.let{ id ->
+                it.product.id?.let { id ->
                     val searchResource = getProduct(productId = id)
                     searchResource.data?.let { product ->
                         history.add(product)
@@ -128,7 +129,7 @@ class DiaryRepositoryImp(
         return try {
             Resource.Success(
                 diaryCol.deleteOne(
-                    DiaryEntryDto::id eq diaryEntryId.toObjectId(),
+                    DiaryEntryDto::_id eq diaryEntryId.toObjectId(),
                     DiaryEntryDto::userId eq userId.toObjectId()
                 ).wasAcknowledged()
             )
@@ -147,11 +148,16 @@ class DiaryRepositoryImp(
         }
     }
 
-    override suspend fun getUserCaloriesSum(date: String, userId: String): Resource<List<Int>> {
+    override suspend fun getUserCaloriesSum(date: String, userId: String): Resource<CaloriesSumResponse> {
         return try {
-            Resource.Success(diaryCol.find(DiaryEntryDto::date eq date, DiaryEntryDto::userId eq userId.toObjectId())
-                .toList()
-                .map { it.nutritionValues.calories })
+            Resource.Success(
+                CaloriesSumResponse(caloriesSum = diaryCol.find(
+                    DiaryEntryDto::date eq date,
+                    DiaryEntryDto::userId eq userId.toObjectId()
+                )
+                    .toList()
+                    .sumOf { it.nutritionValues.calories })
+            )
         } catch (e: Exception) {
             e.printStackTrace()
             Resource.Error(e)
@@ -160,7 +166,7 @@ class DiaryRepositoryImp(
 
     override suspend fun addNewPrice(productId: String, price: Price): Resource<Price> {
         return try {
-            productCol.findOne(ProductDto::id eq productId.toObjectId())?.price?.let {
+            productCol.findOne(ProductDto::_id eq productId.toObjectId())?.price?.let {
                 val newPrice = it.copy(value = (it.value + price.value) / 2.0)
                 productCol.updateOneById(productId, setValue(Product::price, newPrice))
                 Resource.Success(newPrice)

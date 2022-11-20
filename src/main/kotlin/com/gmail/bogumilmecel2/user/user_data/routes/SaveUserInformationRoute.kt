@@ -13,7 +13,7 @@ import io.ktor.server.routing.*
 
 fun Route.configureSaveUserInformationRoute(saveUserInformation: SaveUserInformation){
     authenticate {
-        post("/nutritionValues/"){
+        post("/userInformation/"){
             val userInformation = call.receiveOrNull<UserInformation>()
             userInformation?.let {
                 val principal = call.principal<JWTPrincipal>()

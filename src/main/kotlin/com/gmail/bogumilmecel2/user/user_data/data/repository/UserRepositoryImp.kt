@@ -20,7 +20,7 @@ class UserRepositoryImp(
 
     override suspend fun saveUserInformation(userInformation: UserInformation, userId: String): Resource<Boolean> {
         return try {
-            Resource.Success(userCol.updateOneById(userId, setValue(User::userInformation, userInformation)).wasAcknowledged())
+            Resource.Success(userCol.updateOneById(userId.toObjectId(), setValue(User::userInformation, userInformation)).wasAcknowledged())
         } catch (e: Exception) {
             e.printStackTrace()
             Resource.Error(e)
@@ -32,7 +32,8 @@ class UserRepositoryImp(
         userId: String
     ): Resource<Boolean> {
         return try {
-            Resource.Success(userCol.updateOneById(userId, setValue(User::nutritionValues, nutritionValues)).wasAcknowledged())
+            println("$userId $nutritionValues")
+            Resource.Success(userCol.updateOneById(userId.toObjectId(), setValue(User::nutritionValues, nutritionValues)).wasAcknowledged())
         } catch (e: Exception) {
             e.printStackTrace()
             Resource.Error(e)
@@ -59,7 +60,7 @@ class UserRepositoryImp(
 
     override suspend fun saveLogEntry(entry: LogEntry, userId: String): Resource<LogEntry> {
         return try {
-            userCol.updateOneById(userId, setValue(UserDto::latestLogEntry, entry))
+            userCol.updateOneById(userId.toObjectId(), setValue(UserDto::latestLogEntry, entry))
             Resource.Success(
                 data = LogEntry(
                     streak = entry.streak,

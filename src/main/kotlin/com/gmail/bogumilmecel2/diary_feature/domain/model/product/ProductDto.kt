@@ -6,7 +6,7 @@ import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
 
 data class ProductDto(
-    @BsonId val id: ObjectId = ObjectId(),
+    @BsonId val _id: ObjectId = ObjectId(),
     val name: String = "",
     val containerWeight: Int = 0,
     val position: Int = 0,

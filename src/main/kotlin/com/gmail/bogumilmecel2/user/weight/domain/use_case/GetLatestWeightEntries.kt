@@ -1,8 +1,8 @@
-package com.gmail.bogumilmecel2.weight.domain.use_case
+package com.gmail.bogumilmecel2.user.weight.domain.use_case
 
 import com.gmail.bogumilmecel2.common.util.Resource
-import com.gmail.bogumilmecel2.weight.domain.model.WeightEntry
-import com.gmail.bogumilmecel2.weight.domain.repository.WeightRepository
+import com.gmail.bogumilmecel2.user.weight.domain.model.WeightEntry
+import com.gmail.bogumilmecel2.user.weight.domain.repository.WeightRepository
 
 class GetLatestWeightEntries(
     private val weightRepository: WeightRepository

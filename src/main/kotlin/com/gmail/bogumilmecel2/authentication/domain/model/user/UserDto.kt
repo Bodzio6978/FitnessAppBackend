@@ -6,7 +6,7 @@ import com.gmail.bogumilmecel2.user.user_data.domain.model.UserInformation
 import org.bson.types.ObjectId
 
 data class UserDto(
-    val id: ObjectId = ObjectId(),
+    val _id: ObjectId = ObjectId(),
     val username:String = "",
     val password:String = "",
     val salt:String = "",
