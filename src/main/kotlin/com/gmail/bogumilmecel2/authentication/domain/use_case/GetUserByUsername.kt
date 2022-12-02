@@ -15,12 +15,12 @@ class GetUserByUsername(
 ) {
 
     suspend operator fun invoke(
-        username:String,
+        email:String,
         password:String,
         tokenConfig: TokenConfig
     ):Resource<String>{
-        val resource = userRepository.getUserByUsername(
-            username = username
+        val resource = userRepository.getUserByEmail(
+            email = email
         )
         return when(resource){
             is Resource.Success -> {
@@ -43,7 +43,7 @@ class GetUserByUsername(
                         config = tokenConfig,
                         TokenClaim(
                             name = "userId",
-                            value = user.id.toString()
+                            value = user._id.toString()
                         )
                     )
 

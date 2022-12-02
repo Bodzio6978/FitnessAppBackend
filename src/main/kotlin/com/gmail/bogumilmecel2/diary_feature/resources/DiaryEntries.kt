@@ -5,7 +5,6 @@ import io.ktor.resources.*
 import kotlinx.serialization.Serializable
 import java.util.*
 
-
 @Serializable
 @Resource("")
 class DiaryEntries(

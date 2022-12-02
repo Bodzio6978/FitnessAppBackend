@@ -15,17 +15,19 @@ fun Route.configureSignInRoute(
     getUserByUsername: GetUserByUsername,
     tokenConfig: TokenConfig
 ){
-    post("/signin") {
+    post("/signin/") {
         val request = call.receiveOrNull<AuthRequest>()
         request?.let {
             val resource = getUserByUsername(
-                username = request.username,
+                email = request.email,
                 password = request.password,
                 tokenConfig = tokenConfig
             )
+            println(resource.toString())
 
             when(resource){
                 is Resource.Error -> {
+                    println(resource.error)
                     call.respond(
                         HttpStatusCode.Conflict
                     )

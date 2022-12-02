@@ -8,13 +8,14 @@ fun Route.configureAuthRoutes(
     authRoutes: AuthRoutes,
     tokenConfig: TokenConfig
 ){
-    route("authentication"){
+    route("/authentication/"){
         configureSignUpRoute(authRoutes.registerNewUser)
         configureSignInRoute(
             getUserByUsername = authRoutes.getUserByUsername,
             tokenConfig = tokenConfig
         )
         configureAuthenticateRoute()
+        configureCheckIfUsernameExistsRoute(authRoutes.checkIfUsernameExists)
     }
 }
 

@@ -6,6 +6,7 @@ import com.gmail.bogumilmecel2.authentication.data.service.JwtTokenService
 import com.gmail.bogumilmecel2.authentication.data.service.SHA256HashingService
 import com.gmail.bogumilmecel2.authentication.domain.model.token.TokenConfig
 import com.gmail.bogumilmecel2.authentication.domain.use_case.AuthRoutes
+import com.gmail.bogumilmecel2.authentication.domain.use_case.CheckIfUsernameExists
 import com.gmail.bogumilmecel2.authentication.domain.use_case.GetUserByUsername
 import com.gmail.bogumilmecel2.authentication.domain.use_case.RegisterNewUser
 import com.gmail.bogumilmecel2.authentication.routes.configureAuthRoutes
@@ -25,9 +26,11 @@ import com.gmail.bogumilmecel2.user.log.domain.use_case.GetLatestLogEntry
 import com.gmail.bogumilmecel2.user.log.domain.use_case.InsertLogEntry
 import com.gmail.bogumilmecel2.user.log.routes.configureLogRoutes
 import com.gmail.bogumilmecel2.user.user_data.data.repository.UserRepositoryImp
-import com.gmail.bogumilmecel2.user.user_data.domain.use_cases.*
+import com.gmail.bogumilmecel2.user.user_data.domain.use_cases.GetUser
+import com.gmail.bogumilmecel2.user.user_data.domain.use_cases.SaveUserInformation
+import com.gmail.bogumilmecel2.user.user_data.domain.use_cases.SaveUserNutritionValues
+import com.gmail.bogumilmecel2.user.user_data.domain.use_cases.UserDataUseCases
 import com.gmail.bogumilmecel2.user.user_data.routes.configureUserDataRoutes
-import com.gmail.bogumilmecel2.user.weight.data.repository.WeightRepositoryImp
 import com.gmail.bogumilmecel2.user.weight.domain.use_case.AddWeightEntry
 import com.gmail.bogumilmecel2.user.weight.domain.use_case.GetLatestWeightEntries
 import com.gmail.bogumilmecel2.user.weight.domain.use_case.WeightUseCases
@@ -49,10 +52,6 @@ fun Application.module() {
         recipeCol = databaseManager.client.getCollection("recipe_collection"),
         productCol = databaseManager.client.getCollection("product_collection"),
         diaryCol = databaseManager.client.getCollection("diary_collection")
-    )
-
-    val weightRepository = WeightRepositoryImp(
-        weightCol = databaseManager.client.getCollection("weight_collection")
     )
 
     val userRepository = UserRepositoryImp(userCol = databaseManager.client.getCollection("user_collection"))
@@ -82,15 +81,14 @@ fun Application.module() {
     )
 
     val weightUseCases = WeightUseCases(
-        addWeightEntry = AddWeightEntry(weightRepository),
-        getLatestWeightEntries = GetLatestWeightEntries(weightRepository)
+        addWeightEntry = AddWeightEntry(userRepository),
+        getLatestWeightEntries = GetLatestWeightEntries(userRepository)
     )
 
     val userDataUseCases = UserDataUseCases(
-        getUserInformation = GetUserInformation(userRepository = userRepository),
-        getUserNutritionValues = GetUserNutritionValues(userRepository = userRepository),
         saveUserInformation = SaveUserInformation(userRepository = userRepository),
-        saveUserNutritionValues = SaveUserNutritionValues(userRepository = userRepository)
+        saveUserNutritionValues = SaveUserNutritionValues(userRepository = userRepository),
+        getUser = GetUser(userRepository = userRepository)
     )
 
     val recipeUseCases = RecipeUseCases(
@@ -134,7 +132,8 @@ fun Application.module() {
                     userRepository = userRepository,
                     hashingService = hashingService,
                     tokenService = tokenService
-                )
+                ),
+                checkIfUsernameExists = CheckIfUsernameExists(userRepository)
             )
         )
 

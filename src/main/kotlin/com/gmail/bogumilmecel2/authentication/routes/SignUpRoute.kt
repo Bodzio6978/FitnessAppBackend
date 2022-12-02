@@ -12,21 +12,30 @@ import io.ktor.server.routing.*
 fun Route.configureSignUpRoute(
     registerNewUser: RegisterNewUser
 ){
-    post("/signup") {
+    post("/signup/") {
         val request = call.receiveOrNull<AuthRequest>()
         request?.let {
-            val resource = registerNewUser(
-                username = request.username,
-                password = request.password
-            )
+            if (request.username == null){
+                call.respond(HttpStatusCode.BadRequest)
+                return@post
+            } else {
+                val resource = registerNewUser(
+                    email = request.email,
+                    password = request.password,
+                    username = request.username
+                )
 
-            when(resource){
-                is Resource.Success -> {
-                    call.respond(HttpStatusCode.OK)
-                }
-                is Resource.Error -> {
-                    call.respond(HttpStatusCode.Conflict)
-                    return@post
+                when(resource){
+                    is Resource.Success -> {
+                        call.respond(
+                            status = HttpStatusCode.OK,
+                            message = true
+                        )
+                    }
+                    is Resource.Error -> {
+                        call.respond(HttpStatusCode.Conflict,)
+                        return@post
+                    }
                 }
             }
         } ?: kotlin.run {

@@ -6,8 +6,7 @@ import io.ktor.server.routing.*
 fun Route.configureUserDataRoutes(userDataUseCases: UserDataUseCases) {
     route("/userData/") {
         configureSaveUserNutritionValuesRoute(userDataUseCases.saveUserNutritionValues)
-        configureGetUserNutritionValuesRoute(userDataUseCases.getUserNutritionValues)
-        configureGetUserInformationRoute(userDataUseCases.getUserInformation)
         configureSaveUserInformationRoute(userDataUseCases.saveUserInformation)
+        configureGetUserRoute(userDataUseCases.getUser)
     }
 }
